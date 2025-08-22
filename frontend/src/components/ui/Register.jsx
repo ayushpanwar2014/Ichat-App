@@ -1,6 +1,21 @@
 import { Box, Button, TextField } from "@mui/material";
+import { useState } from "react";
 
 export default function Register() {
+
+    const [avatar, setAvatar] = useState({
+        file: null,
+        url: ""
+    });
+
+    const handleAvatar = (e) => {
+        if (e.target.files[0]) {
+            setAvatar({
+                file: e.target.files[0],
+                url: URL.createObjectURL(e.target.files[0])
+            })
+        }
+    }
     return (
         <Box
             sx={{
@@ -9,9 +24,15 @@ export default function Register() {
                 maxWidth: "400px",
                 display: "flex",
                 flexDirection: "column",
-                gap: 1,
+                gap: {xs: 2,sm: 1,md: 1, lg: 1},
             }}
         >
+            {/* Profile */}
+            <label htmlFor="file">
+                <img src={avatar.url || "./src/assets/avatar.png"} alt="" />
+                <input type="file" id='file' style={{ display: 'none' }} onChange={handleAvatar} />
+            </label>
+
             {/* Username */}
             <TextField
                 fullWidth
@@ -88,29 +109,10 @@ export default function Register() {
                 }}
             />
 
-            {/* Upload Picture */}
-            <Button
-                component="label"
-                fullWidth
-                sx={{
-                    backgroundColor: "rgba(255,255,255,0.05)",
-                    color: "whitesmoke",
-                    fontWeight: "bold",
-                    borderRadius: 5,
-                    "&:hover": { backgroundColor: "rgba(255,255,255,0.1)" },
-                    textTransform: "none",
-                    py: 1.5,
-                }}
-            >
-                Upload Picture
-                <input type="file" hidden />
-            </Button>
-
             {/* Sign Up Button */}
             <Button
                 fullWidth
                 sx={{
-                    mt: 1,
                     mb: -3,
                     py: 1.5,
                     background: "linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%)",

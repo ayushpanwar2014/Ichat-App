@@ -30,3 +30,20 @@
 .createAccount:hover {
   color: #8f94fb;
 }
+
+ label {
+   width: 100%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   cursor: pointer;
+   gap: 15px;
+
+   img {
+     width: 50px;
+     height: 50px;
+     border-radius: 100%;
+     object-fit: cover;
+     /* opacity: 0.6; */
+   }
+ }
