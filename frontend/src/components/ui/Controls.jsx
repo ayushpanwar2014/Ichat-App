@@ -42,7 +42,7 @@ function MacOSButtons() {
           transition: "all 0.2s ease",
         }}
       >
-        <ArrowBackIosIcon sx={{ fontSize: 10, color: "white" }} />
+        <ArrowBackIosIcon sx={{ fontSize: 10, color: "black" }} />
       </Box>
 
       {/* Yellow - Reload */} 
@@ -60,7 +60,7 @@ function MacOSButtons() {
           transition: "all 0.2s ease",
         }}
       >
-        <ReplayIcon sx={{ fontSize: 10 }} />
+        <ReplayIcon sx={{ fontSize: 10, color:'black' }} />
       </Box>
       
       {/* Green - Forward */}
@@ -78,7 +78,7 @@ function MacOSButtons() {
           transition: "all 0.2s ease",
         }}
       >
-        <ArrowForwardIosIcon sx={{ fontSize: 9 }} />
+        <ArrowForwardIosIcon sx={{ fontSize: 10, color: 'black' }} />
       </Box>
     </Box>
   );

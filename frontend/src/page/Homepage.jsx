@@ -1,9 +1,9 @@
 
 import { Container, Typography } from "@mui/material";
 import MacOSButtons from "../components/ui/Controls";
-import Login from "../components/ui/Login";
+import Login from "../components/Login";
 import { useState } from "react";
-import Register from "../components/ui/Register";
+import Register from "../components/Register";
 
 function HomePage() {
 
