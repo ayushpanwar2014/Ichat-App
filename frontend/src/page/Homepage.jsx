@@ -1,5 +1,6 @@
 
 import { Container, Box, Typography, Button, TextField, Link } from "@mui/material";
+import MacOSButtons from "../components/ui/Controls";
 
 function HomePage() {
   return (
@@ -8,7 +9,7 @@ function HomePage() {
       maxWidth={false} // disable MUI breakpoints
       sx={{
         width: { xs: "95vw", sm: "80vw", md: "60vw", lg: "35vw" },
-        height: { xs: "80vh", sm: "80vh", md: "80vh" },
+        height: { xs: "70vh", sm: "75vh", md: "80vh" },
         backgroundColor: "rgba(17, 25, 40, 0.85)",
         borderRadius: "15px",
         border: "1px solid rgba(255, 255, 255, 0.125)",
@@ -23,8 +24,9 @@ function HomePage() {
         gap: 4,    // spacing between elements
       }}
     >
+      <MacOSButtons/>
       {/* Headline */}
-      <Typography variant="h3" color="whitesmoke" align="center">
+      <Typography variant="h3" color="whitesmoke" align="center" fontWeight={"500"}>
         iChat
       </Typography>
 
@@ -36,6 +38,7 @@ function HomePage() {
           display: "flex",
           flexDirection: "column",
           gap: 2,
+          marginTop: { xs: 10, lg: 3 },
         }}
       >
         {/* Email */}
@@ -55,14 +58,13 @@ function HomePage() {
             },
             "& .MuiOutlinedInput-root": {
               "& fieldset": {
-                borderColor: "none",
+                border: 'none'
               },
               "&:hover fieldset": {
-                borderColor: "rgba(255, 255, 255, 0)",
+                border: 'none'
               },
               "&.Mui-focused fieldset": {
-                borderColor: "rgba(255,255,255,0.3)", // same as normal to remove blue focus
-                borderRadius: 5
+                border: 'none'
               },
             },
           }}
@@ -74,9 +76,7 @@ function HomePage() {
           variant="outlined"
           label="Password"
           type="password"
-          sx={{
-            backgroundColor: "rgba(255,255,255,0.05)",
-            borderRadius: 5,
+          sx={{ backgroundColor: "rgba(255,255,255,0.05)", borderRadius: 5,
             "& .MuiInputBase-input": {
               color: "whitesmoke",
             },
@@ -85,54 +85,33 @@ function HomePage() {
             },
             "& .MuiOutlinedInput-root": {
               "& fieldset": {
-                borderColor: "none",
+                border: 'none'
               },
               "&:hover fieldset": {
-                borderColor: "rgba(255, 255, 255, 0)",
+                border: 'none'
               },
               "&.Mui-focused fieldset": {
-                borderColor: "rgba(255,255,255,0.3)", // same as normal to remove blue focus
-                borderRadius: 5
+                border: 'none'
               },
             },
           }}
         />
 
-
-        <Button
+        <Button 
           fullWidth
           sx={{
-            mt: 1,
-            py: 1.5,
+            mt: 10, py: 1.5,
             background: "linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%)", // gradient
-            color: "white",
-            fontWeight: "bold",
-            fontSize: "1rem",
-            borderRadius: "12px",
+            color: "white", fontWeight: "bold", fontSize: "1rem", borderRadius: "12px",
             boxShadow: "0 4px 15px rgba(0,0,0,0.3)",
-            transition: "all 0.3s ease",
-            "&:active": {
-              transform: "scale(0.98)",
-            },
+
           }}
         >
           Login
         </Button>
-
-
-        {/* Links */}
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            mt: 1,
-          }}
-        >
-          
-        </Box>
       </Box>
 
-
+          <span  className="createAccount">Create an Account</span>
 
     </Container>
   );

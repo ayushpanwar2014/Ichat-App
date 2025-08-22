@@ -21,3 +21,12 @@
   /* Makes image cover entire viewport */
   color: whitesmoke;
 }
+
+.createAccount{
+  transition: 0.5s;
+  cursor: pointer;
+}
+
+.createAccount:hover {
+  color: #8f94fb;
+}

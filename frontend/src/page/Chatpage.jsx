@@ -1,10 +1,11 @@
 
 import { Container, Box, Typography, TextField, Button } from "@mui/material";
+import MacOSButtons from "../components/ui/Controls";
 
 function Chatpage() {
 
 
-   
+
 
 
     return (
@@ -24,6 +25,7 @@ function Chatpage() {
                 marginTop: "10vh",
             }}
         >
+            <MacOSButtons />
             {/* Sidebar */}
             <Box
                 sx={{
