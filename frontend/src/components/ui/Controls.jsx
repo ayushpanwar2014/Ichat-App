@@ -1,50 +1,85 @@
 import React from "react";
 import { Box } from "@mui/material";
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import ReplayIcon from '@mui/icons-material/Replay';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 function MacOSButtons() {
+  const handleBack = () => {
+    window.history.back();
+  };
+
+  const handleReload = () => {
+    window.location.reload();
+  };
+
+  const handleForward = () => {
+    window.history.forward();
+  };
+
   return (
     <Box
       sx={{
         display: "flex",
-        gap: "8px", // spacing between buttons
+        gap: "8px",
         position: "absolute",
         top: "12px",
-        left: "12px", // Mac buttons are usually on the left
+        left: "12px",
       }}
     >
-      {/* Close */}
+      {/* Red - Back */}
       <Box
+        onClick={handleBack}
         sx={{
-          width: "12px",
-          height: "12px",
+          width: "13px",
+          height: "13px",
           borderRadius: "50%",
           backgroundColor: "#ff5f57",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
           "&:hover": { transform: "scale(1.2)", cursor: "pointer" },
           transition: "all 0.2s ease",
         }}
-      />
-      {/* Minimize */}
+      >
+        <ArrowBackIosIcon sx={{ fontSize: 9, color: "white" }} />
+      </Box>
+
+      {/* Yellow - Reload */} 
       <Box
+        onClick={handleReload}
         sx={{
-          width: "12px",
-          height: "12px",
+          width: "13px",
+          height: "13px",
           borderRadius: "50%",
           backgroundColor: "#ffbd2e",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
           "&:hover": { transform: "scale(1.2)", cursor: "pointer" },
           transition: "all 0.2s ease",
         }}
-      />
-      {/* Maximize / Green */}
+      >
+        <ReplayIcon sx={{ fontSize: 9 }} />
+      </Box>
+      
+      {/* Green - Forward */}
       <Box
+        onClick={handleForward}
         sx={{
-          width: "12px",
-          height: "12px",
+          width: "13px",
+          height: "13px",
           borderRadius: "50%",
           backgroundColor: "#28c940",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
           "&:hover": { transform: "scale(1.2)", cursor: "pointer" },
           transition: "all 0.2s ease",
         }}
-      />
+      >
+        <ArrowForwardIosIcon sx={{ fontSize: 9 }} />
+      </Box>
     </Box>
   );
 }

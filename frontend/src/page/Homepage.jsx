@@ -36,7 +36,6 @@ function HomePage() {
         iChat
       </Typography>
 
-
       {
         form ? (
           <Login />
@@ -47,7 +46,6 @@ function HomePage() {
       }
 
       <span onClick={() => setForm((prev) => !prev)} className="createAccount">{form ? "Don't have an account? Sign Up" : 'Already have an account? Log In'}</span>
-
     </Container>
   );
 }

@@ -8,9 +8,6 @@
   font-family: 'Poppins', sans-serif;
 }
 
-
-
-
 .App {
   min-height: 100vh;
   display: flex;
@@ -40,7 +37,7 @@
    gap: 15px;
 
    img {
-     width: 50px;
+     width: 52px;
      height: 50px;
      border-radius: 100%;
      object-fit: cover;
