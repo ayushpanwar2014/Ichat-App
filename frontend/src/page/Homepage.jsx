@@ -9,10 +9,6 @@ function HomePage() {
 
   const [form, setForm] = useState(true);
 
-  const handleOnForm = () => {
-    setForm((prev) => !prev);
-  }
-
   return (
 
     <Container
@@ -50,7 +46,7 @@ function HomePage() {
           )
       }
 
-      <span onClick={handleOnForm} className="createAccount">{form ? "Create an Account" : 'Already have Account'}</span>
+      <span onClick={() => setForm((prev) => !prev)} className="createAccount">{form ? "Don't have an account? Sign Up" : 'Already have an account? Log In'}</span>
 
     </Container>
   );
