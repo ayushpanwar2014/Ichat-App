@@ -10,3 +10,14 @@
 
 
 
+
+.App {
+  min-height: 100vh;
+  display: flex;
+  background-image: url(./assets/chat-wallpaper.jpg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* Makes image cover entire viewport */
+  color: whitesmoke;
+}
