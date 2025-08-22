@@ -31,8 +31,8 @@ function MacOSButtons() {
       <Box
         onClick={handleBack}
         sx={{
-          width: "13px",
-          height: "13px",
+          width: "15px",
+          height: "15px",
           borderRadius: "50%",
           backgroundColor: "#ff5f57",
           display: "flex",
@@ -42,15 +42,15 @@ function MacOSButtons() {
           transition: "all 0.2s ease",
         }}
       >
-        <ArrowBackIosIcon sx={{ fontSize: 9, color: "white" }} />
+        <ArrowBackIosIcon sx={{ fontSize: 10, color: "white" }} />
       </Box>
 
       {/* Yellow - Reload */} 
       <Box
         onClick={handleReload}
         sx={{
-          width: "13px",
-          height: "13px",
+          width: "15px",
+          height: "15px",
           borderRadius: "50%",
           backgroundColor: "#ffbd2e",
           display: "flex",
@@ -60,15 +60,15 @@ function MacOSButtons() {
           transition: "all 0.2s ease",
         }}
       >
-        <ReplayIcon sx={{ fontSize: 9 }} />
+        <ReplayIcon sx={{ fontSize: 10 }} />
       </Box>
       
       {/* Green - Forward */}
       <Box
         onClick={handleForward}
         sx={{
-          width: "13px",
-          height: "13px",
+          width: "15px",
+          height: "15px",
           borderRadius: "50%",
           backgroundColor: "#28c940",
           display: "flex",
