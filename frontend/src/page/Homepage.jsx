@@ -1,9 +1,18 @@
 
-import { Container, Box, Typography, Button, TextField, Link } from "@mui/material";
+import { Container, Typography } from "@mui/material";
 import MacOSButtons from "../components/ui/Controls";
 import Login from "../components/ui/Login";
+import { useState } from "react";
+import Register from "../components/ui/Register";
 
 function HomePage() {
+
+  const [form, setForm] = useState(true);
+
+  const handleOnForm = () => {
+    setForm((prev) => !prev);
+  }
+
   return (
 
     <Container
@@ -25,16 +34,23 @@ function HomePage() {
         gap: 4,    // spacing between elements
       }}
     >
-      <MacOSButtons/>
+      <MacOSButtons />
       {/* Headline */}
       <Typography variant="h3" color="whitesmoke" align="center" fontWeight={"500"}>
         iChat
       </Typography>
 
-      {/* Login Form */}
-      <Login/>
 
-          <span  className="createAccount">Create an Account</span>
+      {
+        form ? (
+          <Login />
+        ) :
+          (
+            <Register />
+          )
+      }
+
+      <span onClick={handleOnForm} className="createAccount">{form ? "Create an Account" : 'Already have Account'}</span>
 
     </Container>
   );
