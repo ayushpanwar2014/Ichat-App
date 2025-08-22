@@ -4,17 +4,28 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ReplayIcon from '@mui/icons-material/Replay';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
+import { useProgress } from "../../context/ProgressContext";
+
 function MacOSButtons() {
+
+  const { startProgress, completeProgress } = useProgress();
+
   const handleBack = () => {
+    startProgress();
     window.history.back();
+    completeProgress();
   };
 
   const handleReload = () => {
+    startProgress();
     window.location.reload();
+    completeProgress();
   };
 
   const handleForward = () => {
+    startProgress();
     window.history.forward();
+    completeProgress();
   };
 
   return (

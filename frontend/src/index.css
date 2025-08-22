@@ -44,3 +44,43 @@
      /* opacity: 0.6; */
    }
  }
+   
+ @keyframes pulseGlow {
+   0% {
+     box-shadow:
+       0 0 16px #ff966d,
+       0 0 32px #ff966d,
+       0 0 64px #ff966d,
+       0 0 96px #ff966d;
+   }
+
+   50% {
+     box-shadow:
+       0 0 24px #fa538d,
+       0 0 48px #fa538d,
+       0 0 96px #fa538d,
+       0 0 128px #fa538d;
+   }
+
+   100% {
+     box-shadow:
+       0 0 16px #89379c,
+       0 0 32px #89379c,
+       0 0 64px #89379c,
+       0 0 96px #89379c;
+   }
+ }
+
+ #gradient-loading-bar {
+   border-radius: 8px;
+   animation: pulseGlow 1.8s infinite ease-in-out;
+ }
+
+
+
+
+
+
+
+
+ 
