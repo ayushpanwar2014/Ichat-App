@@ -100,8 +100,14 @@ const AppContextProvider = (props) => {
                 if (response.data.success) {
                     fetchUser();
                     navigate('/');
-                    alert('Logged In')
+                    alert('Account Created!');
                     completeProgress();
+                    setSignUp({
+                        email: '',
+                        name: '',
+                        password: '',
+                        confirmPassword: ''
+                    })
                 }
 
             } catch (error) {
@@ -124,6 +130,10 @@ const AppContextProvider = (props) => {
                 navigate('/');
                 alert('Logged In')
                 completeProgress();
+                setLogin({
+                    email: '',
+                    password: ''
+                })
             }
 
         } catch (error) {
