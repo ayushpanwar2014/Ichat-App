@@ -3,6 +3,7 @@ import { Route, Routes, Navigate } from "react-router-dom";
 import HomePage from "./page/HomePage";
 import Chatpage from "./page/Chatpage";
 import { AppContext } from "./context/exportAppContext";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
 

@@ -5,6 +5,7 @@ import { Provider } from "./components/ui/Provider";
 import { BrowserRouter as Router } from "react-router-dom";
 import { ProgressProvider } from "./context/ProgressContext.jsx";
 import AppContextProvider from "./context/AppContext.jsx";
+import { ToastContainer } from "react-toastify";
 
 createRoot(document.getElementById("root")).render(
     <Router>
@@ -12,6 +13,7 @@ createRoot(document.getElementById("root")).render(
     <AppContextProvider>
       <Provider>
         <App />
+          <ToastContainer/>
       </Provider>
     </AppContextProvider>
       </ProgressProvider>

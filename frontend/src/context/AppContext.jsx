@@ -5,6 +5,7 @@ import axios from 'axios';
 import { AppContext } from "./exportAppContext";
 import { useNavigate } from "react-router-dom";
 import { useProgress } from "./ProgressContext";
+import { notifyError, notifySuccess } from "../components/notification/toast";
 
 
 const AppContextProvider = (props) => {
@@ -37,12 +38,13 @@ const AppContextProvider = (props) => {
                 localStorage.removeItem('userData');
                 setUser("");
                 navigate('/')
-                alert('Logout Done!')
+                notifySuccess("Logout successful!");
                 completeProgress();
             }
 
         } catch (error) {
             console.log(error.response.data.msg);
+            notifyError(error.response.data.msg);
             completeProgress();
         }
     }, [backendURL, navigate, startProgress, completeProgress]);
@@ -64,23 +66,22 @@ const AppContextProvider = (props) => {
                 setUser("");
                 completeProgress();
             }
-
-        } catch (err) {
-            console.log(err)
+            
+        } catch (error) {
             localStorage.removeItem('userData');
             setUser("");
             completeProgress();
-            // toast.error(error.response.data.msg);
         }
     }, [backendURL, completeProgress, startProgress]);
-
+    
     //Register
     const onSubmitRegister = async (e) => {
         e.preventDefault();
-
+        
         startProgress();
         if (signUp.password !== signUp.confirmPassword) {
-            alert('Password not Matched!');
+            notifyError( "Password not Matched!");
+            return completeProgress();
         }
         else {
             try {
@@ -89,30 +90,30 @@ const AppContextProvider = (props) => {
                 UserData.append('email', signUp.email);
                 UserData.append('password', signUp.password);
                 UserData.append('image', userImg)
-
+                
                 const response = await axios.post(backendURL + '/api/user/register', UserData, {
                     withCredentials: true,
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     }
                 });
-
+                
                 if (response.data.success) {
                     fetchUser();
                     navigate('/');
-                    alert('Account Created!');
-                    completeProgress();
                     setSignUp({
                         email: '',
                         name: '',
                         password: '',
                         confirmPassword: ''
                     })
+                    notifySuccess("Account created successfully!");
+                    completeProgress();
                 }
 
             } catch (error) {
+                notifyError(error.response.data.msg);
                 completeProgress();
-                console.log(error);
             }
         }
     }
@@ -128,17 +129,17 @@ const AppContextProvider = (props) => {
             if (response.data.success) {
                 fetchUser();
                 navigate('/');
-                alert('Logged In')
-                completeProgress();
                 setLogin({
                     email: '',
                     password: ''
                 })
+                notifySuccess("Logged in successfully!");
+                completeProgress();
             }
 
         } catch (error) {
+            notifyError(error.response.data.msg);
             completeProgress();
-            console.log(error);
         }
 
     }
