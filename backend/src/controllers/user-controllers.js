@@ -41,7 +41,7 @@ export const register = async (req, res, next) => {
 
         }
         else {
-            return res.status(404).json({ success: false, msg:  "Please select Profile Image !" });
+            return res.status(404).json({ success: false, msg: "Please select Profile Image !" });
         }
 
     } catch (error) {
@@ -103,7 +103,6 @@ export const logout = async (req, res, next) => {
 //authenticated user
 export const authUser = async (req, res, next) => {
     try {
-
         //userId and current sessionID
         const { userID, _id } = req.user;
 
@@ -185,3 +184,37 @@ const authenticateUser = async (req, res, user) => {
     });
 
 };
+
+//all Users
+export const allUsers = async (req, res, next) => {
+    const { userID } = req.user;
+    const search = req.query.search || "";
+
+    try {
+        let users = [];
+
+        if (search) {
+            // Fast prefix search (good for autocomplete)
+            const regex = new RegExp("^" + search, "i");
+
+            users = await UserModel.find({
+                $or: [{ name: regex }, { email: regex }],
+                _id: { $ne: userID }
+            })
+                .select("name email image")
+                .limit(20) // pagination
+                .lean();
+        } else {
+            // If no search, just return limited users
+            users = await UserModel.find({ _id: { $ne: userID } })
+                .select("name email image")
+                .limit(20)
+                .lean();
+        }
+
+        res.status(200).json({ success: true, data: users });
+    } catch (err) {
+        next({ status: 401, message: "UnAuthorized User" });
+    }
+};
+

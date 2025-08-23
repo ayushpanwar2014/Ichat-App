@@ -7,12 +7,14 @@ const UserSchema = new mongoose.Schema({
 
     name: {
         type: String,
-        required: true
+        required: true,
+         index: true,
     },
     email: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+         index: true,
     },
     password: {
         type: String,
@@ -27,11 +29,13 @@ const UserSchema = new mongoose.Schema({
     { timestamps: true }
 );
 
+UserSchema.index({ name: "text", email: "text" });
+
 // Strong hashing options for argon2
 const options = {
     type: argon2.argon2id,         // Best all-around (resists GPU & side-channel attacks)
-    memoryCost: 2 ** 16,          // 64 MB
-    timeCost: 5,                 // Iterations (increase for more security)
+    memoryCost: 2 ** 15,          // 32 MB
+    timeCost: 3,                 // Iterations (increase for more security)
     parallelism: 2              // Number of threads (adjust per CPU core)
 }
 
