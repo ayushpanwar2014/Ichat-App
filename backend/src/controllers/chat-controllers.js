@@ -16,9 +16,7 @@ export const accessChat = async (req, res, next) => {
         let chat = await ChatModel.findOne({
             isGroupChat: false,
             users: { $all: [currentUser, userID] },
-        })
-            .populate("users", "-password")
-            .populate("latestMessage");
+        }).populate("users", "-password").populate("latestMessage");
 
         if (!chat) {
             // ✅ If not found, create it
