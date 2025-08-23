@@ -3,7 +3,6 @@ import { useCallback, useEffect, useState } from "react";
 // import { doctors } from "../assets/assets_frontend/assets";
 import axios from 'axios';
 import { AppContext } from "./exportAppContext";
-import { useNavigate } from "react-router-dom";
 import { useProgress } from "./ProgressContext";
 import { notifyError, notifySuccess } from "../components/notification/toast";
 
@@ -12,7 +11,6 @@ const AppContextProvider = (props) => {
 
     const { startProgress, completeProgress } = useProgress();
     const backendURL = import.meta.env.VITE_BACKEND_URL;
-    const navigate = useNavigate()
     const [signUp, setSignUp] = useState({
         email: '',
         name: '',
@@ -37,7 +35,6 @@ const AppContextProvider = (props) => {
             if (resp.data.success) {
                 localStorage.removeItem('userData');
                 setUser("");
-                navigate('/')
                 notifySuccess("Logout successful!");
                 completeProgress();
             }
@@ -47,7 +44,7 @@ const AppContextProvider = (props) => {
             notifyError(error.response.data.msg);
             completeProgress();
         }
-    }, [backendURL, navigate, startProgress, completeProgress]);
+    }, [backendURL, startProgress, completeProgress]);
 
     //get user
     const fetchUser = useCallback(async () => {
@@ -71,6 +68,8 @@ const AppContextProvider = (props) => {
             localStorage.removeItem('userData');
             setUser("");
             completeProgress();
+            console.log(error);
+            
         }
     }, [backendURL, completeProgress, startProgress]);
     
@@ -99,14 +98,14 @@ const AppContextProvider = (props) => {
                 });
                 
                 if (response.data.success) {
-                    fetchUser();
-                    navigate('/');
+                    await fetchUser();
                     setSignUp({
                         email: '',
                         name: '',
                         password: '',
                         confirmPassword: ''
                     })
+                    setUserImg(null);
                     notifySuccess("Account created successfully!");
                     completeProgress();
                 }
@@ -127,8 +126,7 @@ const AppContextProvider = (props) => {
             const response = await axios.post(backendURL + '/api/user/login', Login, { withCredentials: true });
 
             if (response.data.success) {
-                fetchUser();
-                navigate('/');
+                await fetchUser();
                 setLogin({
                     email: '',
                     password: ''
