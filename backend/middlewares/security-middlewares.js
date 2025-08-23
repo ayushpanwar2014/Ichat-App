@@ -7,7 +7,7 @@ export const securityMiddleware = (app) => {
 
     // Frontend URLs
     const MAIN_FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
-    const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:3000";
+    const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:7060";
 
     app.use(
         helmet({

@@ -1,5 +1,14 @@
 import { Box, Button, TextField } from "@mui/material";
+import { AppContext } from "../context/exportAppContext";
+import { useContext } from "react";
 function Login() {
+
+    const { Login, setLogin, onSubmitLogin } = useContext(AppContext);
+
+    const onChangeHandler = (e) => {
+        setLogin({ ...Login, [e.target.name]: e.target.value });
+    }
+
     return (
 
         <Box
@@ -18,6 +27,9 @@ function Login() {
                 variant="outlined"
                 label="Email"
                 type="email"
+                name="email"
+                value={Login.email}
+                onChange={onChangeHandler}
                 sx={{
                     backgroundColor: "rgba(255,255,255,0.05)",
                     borderRadius: 5,
@@ -47,6 +59,9 @@ function Login() {
                 variant="outlined"
                 label="Password"
                 type="password"
+                name="password"
+                value={Login.password}
+                onChange={onChangeHandler}
                 sx={{
                     backgroundColor: "rgba(255,255,255,0.05)", borderRadius: 5,
                     "& .MuiInputBase-input": {
@@ -70,6 +85,7 @@ function Login() {
             />
 
             <Button
+            onClick={onSubmitLogin}
                 fullWidth
                 sx={{
                     mt: 10, py: 1.5,

@@ -1,21 +1,22 @@
 import { Box, Button, TextField } from "@mui/material";
-import { useState } from "react";
+import { useContext } from "react";
+import { AppContext } from "../context/exportAppContext";
+
 
 export default function Register() {
 
-    const [avatar, setAvatar] = useState({
-        file: null,
-        url: ""
-    });
+    const { setUserImg, userImg, signUp, setSignUp, onSubmitRegister } = useContext(AppContext);
 
     const handleAvatar = (e) => {
         if (e.target.files[0]) {
-            setAvatar({
-                file: e.target.files[0],
-                url: URL.createObjectURL(e.target.files[0])
-            })
+            setUserImg(e.target.files[0]);
         }
     }
+
+    const onChangeHandler = (e) => {
+        setSignUp({ ...signUp, [e.target.name]: e.target.value });
+    }
+
     return (
         <Box
             sx={{
@@ -24,12 +25,12 @@ export default function Register() {
                 maxWidth: "400px",
                 display: "flex",
                 flexDirection: "column",
-                gap: {xs: 2,sm: 1,md: 1, lg: 1},
+                gap: { xs: 2, sm: 1, md: 1, lg: 1 },
             }}
         >
             {/* Profile */}
             <label htmlFor="file">
-                <img src={avatar.url || "./src/assets/avatar.png"} alt="" />
+                <img src={userImg ? URL.createObjectURL(userImg) : "./src/assets/avatar.png"} alt="" />
                 <input type="file" id='file' style={{ display: 'none' }} onChange={handleAvatar} />
             </label>
 
@@ -39,6 +40,10 @@ export default function Register() {
                 variant="outlined"
                 label="Username"
                 type="text"
+                name="name"
+                autoComplete="name"
+                onChange={onChangeHandler}
+                value={signUp.name}
                 sx={{
                     backgroundColor: "rgba(255,255,255,0.05)",
                     borderRadius: 5,
@@ -58,6 +63,10 @@ export default function Register() {
                 variant="outlined"
                 label="Email"
                 type="email"
+                name="email"
+                autoComplete="email"
+                onChange={onChangeHandler}
+                value={signUp.email}
                 sx={{
                     backgroundColor: "rgba(255,255,255,0.05)",
                     borderRadius: 5,
@@ -77,6 +86,11 @@ export default function Register() {
                 variant="outlined"
                 label="Password"
                 type="password"
+                name="password"
+                email="password"
+                autoComplete="password"
+                onChange={onChangeHandler}
+                value={signUp.password}
                 sx={{
                     backgroundColor: "rgba(255,255,255,0.05)",
                     borderRadius: 5,
@@ -96,6 +110,10 @@ export default function Register() {
                 variant="outlined"
                 label="Confirm Password"
                 type="password"
+                name="confirmPassword"
+                autoComplete="password"
+                onChange={onChangeHandler}
+                value={signUp.confirmPassword}
                 sx={{
                     backgroundColor: "rgba(255,255,255,0.05)",
                     borderRadius: 5,
@@ -110,7 +128,7 @@ export default function Register() {
             />
 
             {/* Sign Up Button */}
-            <Button
+            <Button onClick={onSubmitRegister}
                 fullWidth
                 sx={{
                     mb: -3,

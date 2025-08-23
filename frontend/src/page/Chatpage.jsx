@@ -1,6 +1,7 @@
 
 import { Container, Box, Typography, TextField, Button } from "@mui/material";
 import MacOSButtons from "../components/ui/Controls";
+import LogoutControls from "../components/ui/LogoutControls";
 
 function Chatpage() {
 
@@ -26,6 +27,7 @@ function Chatpage() {
             }}
         >
             <MacOSButtons />
+            <LogoutControls/>
             {/* Sidebar */}
             <Box
                 sx={{
