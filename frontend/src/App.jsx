@@ -7,7 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 function App() {
 
-  const {user, setUser} = useContext(AppContext); // store user data if logged in
+  const {user} = useContext(AppContext); // user data from context
 
   return (
     <div className="App">
@@ -15,12 +15,12 @@ function App() {
         {/* If user exists → go to chats, else show homepage */}
         <Route
           path="/"
-          element={user ? <Navigate to="/chats" replace /> : <HomePage setUser={setUser} />}
+          element={user ? <Navigate to="/chats" replace /> : <HomePage />}
         />
         {/* Chats page → only accessible if user exists */}
         <Route
           path="/chats"
-          element={user ? <Chatpage user={user} /> : <Navigate to="/" replace />}
+          element={user ? <Chatpage /> : <Navigate to="/" replace />}
         />
       </Routes>
     </div>

@@ -1,6 +1,5 @@
 
 import { useCallback, useEffect, useState } from "react";
-// import { doctors } from "../assets/assets_frontend/assets";
 import axios from 'axios';
 import { AppContext } from "./exportAppContext";
 import { useProgress } from "./ProgressContext";
