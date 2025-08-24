@@ -208,7 +208,6 @@ export const allUsers = async (req, res, next) => {
             // If no search, just return limited users
             users = await UserModel.find({ _id: { $ne: userID } })
                 .select("name email image")
-                .limit(4)
                 .lean();
         }
 

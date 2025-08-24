@@ -22,7 +22,9 @@ const AppContextProvider = (props) => {
     })
     const [userImg, setUserImg] = useState(null);
 
-    const [user, setUser] = useState("");
+    const [user, setUser] = useState(null);
+
+    
 
     //logout clear cookies
     const fetchLogout = useCallback(async () => {
@@ -53,19 +55,15 @@ const AppContextProvider = (props) => {
 
             if (response.data.success) {
                 setUser(response.data.data);
-                const { _id, ...copyData } = response.data.data;
-                localStorage.setItem('userData', JSON.stringify(copyData));
                 completeProgress();
             }
-            else if (!response.success) {
-                localStorage.removeItem('userData');
-                setUser("");
-                completeProgress();
+            else{
+                setUser(null);  // explicitly null if not logged in
             }
             
         } catch (error) {
             localStorage.removeItem('userData');
-            setUser("");
+            setUser(null);  
             completeProgress();
             console.log(error);
             
@@ -76,14 +74,12 @@ const AppContextProvider = (props) => {
     //Register
     const onSubmitRegister = async (e) => {
         e.preventDefault();
-        
-        startProgress();
         if (signUp.password !== signUp.confirmPassword) {
-            notifyError( "Password not Matched!");
-            return completeProgress();
+            return notifyError( "Password not Matched!");
         }
         else {
             try {
+                startProgress();
                 const UserData = new FormData();
                 UserData.append('name', signUp.name);
                 UserData.append('email', signUp.email);

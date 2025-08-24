@@ -62,7 +62,7 @@ export default function SideDrawer({ drawerOpen }) {
                             height: 50,
                             backgroundColor: "rgba(255,255,255,0.05)",
                             borderRadius: 5,
-                            "& .MuiInputBase-input": { color: "whitesmoke" },
+                            "& .MuiInputBase-input": { color: "whitesmoke", },
                             "& .MuiInputLabel-root": { color: "whitesmoke" },
                             "& .MuiOutlinedInput-root": {
                                 "& fieldset": { border: "none" },
@@ -88,7 +88,7 @@ export default function SideDrawer({ drawerOpen }) {
                 {/* Loader OR User List */}
                 {loading ? (
                     <List>
-                        {[1, 2, 3, 4].map((i) => (
+                        {[1, 2, 3, 4, 5].map((i) => (
                             <ListItem
                                 key={i}
                                 sx={{
@@ -97,6 +97,7 @@ export default function SideDrawer({ drawerOpen }) {
                                     gap: 1,
                                     borderBottom: "0.5px solid rgba(255, 255, 255, 0.28)",
                                     borderRadius: 12,
+                                    marginTop: 1,
                                     py: 1,
                                 }}
                             >
@@ -118,48 +119,74 @@ export default function SideDrawer({ drawerOpen }) {
                         ))}
                     </List>
                 ) : (
-                    <List>
-                        {searchUsers.map((user, index) => (
-                            <ListItem
-                                key={index}
-                                sx={{
-                                    borderBottom: "0.5px solid rgba(255, 255, 255, 0.28)",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    borderRadius: 12,
-                                    gap: 1,
-                                    justifyContent: "space-between",
-                                    "&:hover": {
-                                        backgroundColor: "rgba(255,255,255,0.05)",
-                                        cursor: "pointer",
-                                    },
-                                    transition: "all 0.2s ease",
-                                }}
-                            >
-                                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                    <Avatar
-                                        src={user.image}
-                                        alt={user.name}
-                                        sx={{ width: 35, height: 35 }}
-                                    />
-                                    <ListItemText
-                                        primary={user.name}
-                                        primaryTypographyProps={{
-                                            sx: { fontSize: "0.8rem", color: "whitesmoke" },
+                    <Box
+                            sx={{
+                                maxHeight: 350,
+                                overflowY: "auto",
+
+                                // Smooth scrolling for programmatic scrolls
+                                scrollBehavior: "smooth",
+
+                                // Momentum scroll effect (iOS/Safari/WebKit)
+                                WebkitOverflowScrolling: "touch",
+
+                                // Hide scrollbar
+                                "&::-webkit-scrollbar": { display: "none" },
+                                scrollbarWidth: "none",
+                                scrollbarColor: "transparent transparent",
+                            }}
+
+                    >
+                        <List>
+                            {searchUsers.map((user, index) => (
+                                <ListItem
+                                    key={index}
+                                    sx={{
+                                        borderBottom: "0.5px solid rgba(255, 255, 255, 0.28)",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        borderRadius: 12,
+                                        gap: 1,
+                                        marginTop: 1,
+                                        justifyContent: "space-between",
+                                        "&:hover": {
+                                            backgroundColor: "rgba(255,255,255,0.05)",
+                                            cursor: "pointer",
+                                        },
+                                        transition: "all 0.2s ease",
+                                    }}
+                                >
+                                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                        <Avatar
+                                            src={user.image}
+                                            alt={user.name}
+                                            sx={{ width: 35, height: 35 }}
+                                        />
+                                        <ListItemText
+                                            primary={user.name}
+                                            primaryTypographyProps={{
+                                                sx: { fontSize: "0.8rem", color: "whitesmoke" },
+                                            }}
+                                        />
+                                    </Box>
+                                    <IconButton
+                                        onClick={() => onHandleAccessChat(user._id)}
+                                        sx={{
+                                            color: "gray",
+                                            "&:hover": {
+                                                backgroundColor: "rgba(255,255,255,0.05)",
+                                                cursor: "pointer",
+                                            },
                                         }}
-                                    />
-                                </Box>
-                                <IconButton onClick={() => onHandleAccessChat(user._id)} sx={{
-                                    color: "gray", "&:hover": {
-                                        backgroundColor: "rgba(255,255,255,0.05)",
-                                        cursor: "pointer",
-                                    }, }}>
-                                    <PersonAddIcon fontSize="small" />
-                                </IconButton>
-                            </ListItem>
-                        ))}
-                    </List>
+                                    >
+                                        <PersonAddIcon fontSize="small" />
+                                    </IconButton>
+                                </ListItem>
+                            ))}
+                        </List>
+                    </Box>
                 )}
+
             </Box>
         </Slide>
     );

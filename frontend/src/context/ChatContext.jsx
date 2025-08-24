@@ -2,12 +2,13 @@ import axios from 'axios';
 import { ChatContext } from "./exportChatContext";
 import { useProgress } from "./ProgressContext";
 import { notifyError, notifySuccess } from "../components/notification/toast";
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
+import { AppContext } from './exportAppContext';
 
 const ChatContextProvider = (props) => {
     const { startProgress, completeProgress } = useProgress();
     const backendURL = import.meta.env.VITE_BACKEND_URL;
-
+    const {user} = useContext(AppContext);
     const [search, setSearch] = useState("");
     const [searchUsers, setSearchUsers] = useState([]);
     const [loading, setLoading] = useState(false); // 🔹 new state
@@ -20,6 +21,7 @@ const ChatContextProvider = (props) => {
 
             if (response.data.success) {
                 notifySuccess(response.data.msg);
+                await onFetchAllUserChats();
             }
         } catch (error) {
 
@@ -73,8 +75,11 @@ const ChatContextProvider = (props) => {
 
 
     useEffect(() => {
-        onFetchAllUserChats();
-    }, [onFetchAllUserChats])
+
+        if (user?.name){
+            onFetchAllUserChats();
+        }
+    }, [user,onFetchAllUserChats])
 
     const value = {
         backendURL,

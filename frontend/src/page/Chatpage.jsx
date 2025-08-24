@@ -111,6 +111,8 @@ function Chatpage() {
             ) : (
                 !drawerOpen && <SideBar />
             )}
+
+            
         </Container>
     );
 }
