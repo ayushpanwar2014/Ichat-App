@@ -3,7 +3,7 @@ import UserModel from "../models/user-model.js";
 
 
 // access chat between 2 users, or create if it doesn’t exist
-export const accessChat = async (req, res, next) => {
+export const accessChat = async (req, res) => {
     const { userID } = req.body;  // other user
     const currentUser = req.user.userID; // logged-in user
 
@@ -12,16 +12,17 @@ export const accessChat = async (req, res, next) => {
             return res.status(400).json({ success: false, message: "User ID is required" });
         }
 
-        // ✅ Try to find chat first
+        // Try to find existing private chat
         let chat = await ChatModel.findOne({
             isGroupChat: false,
-            users: { $all: [currentUser, userID] },
-        }).populate("users", "-password").populate("latestMessage");
+            users: { $all: [currentUser, userID], $size: 2 }
+        })
+            .populate("users", "-password")
+            .populate("latestMessage");
 
+        // If no chat, create one
         if (!chat) {
-            // ✅ If not found, create it
             chat = await ChatModel.create({
-                chatName: "sender",
                 isGroupChat: false,
                 users: [currentUser, userID],
             });
@@ -29,18 +30,22 @@ export const accessChat = async (req, res, next) => {
             chat = await chat.populate("users", "-password");
         }
 
-        // ✅ Populate latestMessage.sender if it exists
-        chat = await UserModel.populate(chat, {
-            path: "latestMessage.sender",
-            select: "name image email",
-        });
+        // Populate latestMessage.sender only if exists
+        if (chat.latestMessage) {
+            chat = await UserModel.populate(chat, {
+                path: "latestMessage.sender",
+                select: "name image email",
+            });
+        }
 
-        res.status(200).json({ success: true, data: chat });
+        res.status(200).json({ success: true, chat });
 
     } catch (error) {
-        next({ status: 500, message: error.message });
+        res.status(500).json({ success: false, message: error.message });
     }
 };
+
+
 
 
 export const fetchChats = async (req, res, next) => {

@@ -36,6 +36,14 @@ const ChatModelSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
+// ✅ Always sort users array (fix duplicate [A,B] vs [B,A])
+ChatModelSchema.pre('validate', function (next) {
+    if (this.users && Array.isArray(this.users)) {
+        this.users = this.users.map(u => u.toString()).sort();
+    }
+    next();
+});
+
 // ✅ Ensure at least 2 users in a chat
 ChatModelSchema.pre('save', function (next) {
     if (!this.users || this.users.length < 2) {
@@ -52,6 +60,9 @@ ChatModelSchema.index(
     { isGroupChat: 1, users: 1 },
     { unique: true, partialFilterExpression: { isGroupChat: false } }
 );
+
+// ✅ Index for fetching all chats of a user quickly
+ChatModelSchema.index({ users: 1, isGroupChat: 1 });
 
 // ✅ Index for quickly fetching chats by latest message
 ChatModelSchema.index({ latestMessage: 1 });
