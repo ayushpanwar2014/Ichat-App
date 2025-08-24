@@ -21,8 +21,20 @@ export const accessChat = async (req, res) => {
             .populate("users", "-password")
             .populate("latestMessage");
 
+        if (chat) {
+            // Populate latestMessage.sender only if exists
+            if (chat.latestMessage) {
+                chat = await UserModel.populate(chat, {
+                    path: "latestMessage.sender",
+                    select: "name image email",
+                });
+            }
+
+            res.status(200).json({ success: true, chat, msg: "Already your Friend" });
+        }
+
         // If no chat, create one
-        if (!chat) {
+        else if (!chat) {
             chat = await ChatModel.create({
                 isGroupChat: false,
                 users: [currentUser, userID],
@@ -30,17 +42,18 @@ export const accessChat = async (req, res) => {
             });
 
             chat = await chat.populate("users", "-password");
-        }
 
-        // Populate latestMessage.sender only if exists
-        if (chat.latestMessage) {
-            chat = await UserModel.populate(chat, {
-                path: "latestMessage.sender",
-                select: "name image email",
-            });
-        }
 
-        res.status(200).json({ success: true, chat });
+            // Populate latestMessage.sender only if exists
+            if (chat.latestMessage) {
+                chat = await UserModel.populate(chat, {
+                    path: "latestMessage.sender",
+                    select: "name image email",
+                });
+            }
+
+            res.status(200).json({ success: true, chat, msg: "Added new Friend" });
+        }
 
     } catch (error) {
         res.status(500).json({ success: false, message: "unauthorized access" });
@@ -66,7 +79,7 @@ export const fetchChats = async (req, res, next) => {
             .sort({ updatedAt: -1 }) // latest chat first
             .lean(); // return plain JS objects for performance
 
-        return res.status(200).json({success: true,chats});
+        return res.status(200).json({ success: true, chats });
     } catch (error) {
         next({ status: 401, message: "Unauthorized User" });
     }

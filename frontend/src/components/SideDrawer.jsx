@@ -6,10 +6,17 @@ import {
     ListItem,
     ListItemText,
     Slide,
+    Button,
+    Avatar,
+    IconButton,
+    Skeleton
 } from "@mui/material";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import { useContext } from "react";
+import { ChatContext } from "../context/exportChatContext";
 
 export default function SideDrawer({ drawerOpen }) {
-    const users = ["John Doe", "Jane Smith", "Alice Johnson", "Bob Williams"]; // example users
+    const { onHandleSearch, search, setSearch, searchUsers, loading, onHandleAccessChat } = useContext(ChatContext);
 
     return (
         <Slide direction="right" in={drawerOpen} mountOnEnter unmountOnExit>
@@ -22,7 +29,8 @@ export default function SideDrawer({ drawerOpen }) {
                     width: { xs: "100%", sm: "30%", md: "24%", lg: "23.3%" },
                     height: "100%",
                     backgroundColor: "rgba(7, 6, 6, 0)",
-                    border: "0.5px solid rgba(255, 255, 255, 0.21)",
+                    border: "0.5px solid rgba(255, 255, 255, 0.12)",
+                    borderTopRightRadius: 12,
                     zIndex: 10,
                     padding: 2,
                 }}
@@ -40,59 +48,118 @@ export default function SideDrawer({ drawerOpen }) {
                     Search Users
                 </Typography>
 
-                {/* Search Input */}
-                <TextField
-                    fullWidth
-                    variant="outlined"
-                    label="Search"
-                    type="text"
-                    name="search"
-                    sx={{
-                        height:50,
-                        backgroundColor: "rgba(255,255,255,0.05)",
-                        borderRadius: 5,
-                        "& .MuiInputBase-input": {
+                {/* Search Input + Go Button */}
+                <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
+                    <TextField
+                        fullWidth
+                        variant="outlined"
+                        label="Search"
+                        type="text"
+                        name="search"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        sx={{
+                            height: 50,
+                            backgroundColor: "rgba(255,255,255,0.05)",
+                            borderRadius: 5,
+                            "& .MuiInputBase-input": { color: "whitesmoke" },
+                            "& .MuiInputLabel-root": { color: "whitesmoke" },
+                            "& .MuiOutlinedInput-root": {
+                                "& fieldset": { border: "none" },
+                            },
+                        }}
+                    />
+                    <Button
+                        variant="contained"
+                        sx={{
+                            height: 50,
+                            fontSize: 13,
+                            borderRadius: 5,
+                            backgroundColor: "rgba(255,255,255,0.15)",
                             color: "whitesmoke",
-                            fontSize: { xs: "0.75rem", sm: "0.85rem", md: "0.9rem" }, // responsive input text
-                        },
-                        "& .MuiInputLabel-root": {
-                            color: "whitesmoke",
-                            fontSize: { xs: "0.75rem", sm: "0.85rem", md: "0.8rem" }, // responsive label
-                        },
-                        "& .MuiOutlinedInput-root": {
-                            "& fieldset": {
-                                border: "none",
-                            },
-                            "&:hover fieldset": {
-                                border: "none",
-                            },
-                            "&.Mui-focused fieldset": {
-                                border: "none",
-                            },
-                        },
-                    }}
-                />
+                            "&:hover": { backgroundColor: "rgba(255,255,255,0.25)" },
+                        }}
+                        onClick={onHandleSearch}
+                    >
+                        Go
+                    </Button>
+                </Box>
 
-                {/* User List */}
-                <List>
-                    {users.map((user, index) => (
-                        <ListItem button key={index}>
-                            <ListItemText
-                                primary={user}
-                                primaryTypographyProps={{
-                                    sx: {
-                                        fontSize: {
-                                            xs: "0.75rem", // very small on mobile
-                                            sm: "0.80rem", // small on tablets
-                                            md: "0.80rem", // slightly bigger on desktop
-                                        },
-                                        color: "whitesmoke",
-                                    },
+                {/* Loader OR User List */}
+                {loading ? (
+                    <List>
+                        {[1, 2, 3, 4].map((i) => (
+                            <ListItem
+                                key={i}
+                                sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 1,
+                                    borderBottom: "0.5px solid rgba(255, 255, 255, 0.28)",
+                                    borderRadius: 12,
+                                    py: 1,
                                 }}
-                            />
-                        </ListItem>
-                    ))}
-                </List>
+                            >
+                                {/* Avatar skeleton */}
+                                <Skeleton
+                                    variant="circular"
+                                    width={35}
+                                    height={35}
+                                    sx={{ bgcolor: "rgba(255,255,255,0.2)" }}
+                                />
+                                {/* Text skeleton */}
+                                <Skeleton
+                                    variant="text"
+                                    width="60%"
+                                    height={20}
+                                    sx={{ bgcolor: "rgba(255,255,255,0.2)" }}
+                                />
+                            </ListItem>
+                        ))}
+                    </List>
+                ) : (
+                    <List>
+                        {searchUsers.map((user, index) => (
+                            <ListItem
+                                key={index}
+                                sx={{
+                                    borderBottom: "0.5px solid rgba(255, 255, 255, 0.28)",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    borderRadius: 12,
+                                    gap: 1,
+                                    justifyContent: "space-between",
+                                    "&:hover": {
+                                        backgroundColor: "rgba(255,255,255,0.05)",
+                                        cursor: "pointer",
+                                    },
+                                    transition: "all 0.2s ease",
+                                }}
+                            >
+                                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                    <Avatar
+                                        src={user.image}
+                                        alt={user.name}
+                                        sx={{ width: 35, height: 35 }}
+                                    />
+                                    <ListItemText
+                                        primary={user.name}
+                                        primaryTypographyProps={{
+                                            sx: { fontSize: "0.8rem", color: "whitesmoke" },
+                                        }}
+                                    />
+                                </Box>
+                                <IconButton onClick={() => onHandleAccessChat(user._id)} sx={{
+                                    color: "gray", "&:hover": {
+                                        backgroundColor: "rgba(255,255,255,0.05)",
+                                        cursor: "pointer",
+                                    }, }}>
+                                    <PersonAddIcon fontSize="small" />
+                                </IconButton>
+                            </ListItem>
+                        ))}
+                    </List>
+                )}
             </Box>
         </Slide>
     );

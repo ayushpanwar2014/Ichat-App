@@ -72,6 +72,7 @@ const AppContextProvider = (props) => {
         }
     }, [backendURL, completeProgress, startProgress]);
     
+    
     //Register
     const onSubmitRegister = async (e) => {
         e.preventDefault();

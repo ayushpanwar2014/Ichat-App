@@ -1,23 +1,36 @@
-import  { useState } from "react";
+import { useState } from "react";
 import {
     Container,
     Box,
-    Typography,
-    TextField,
-    List,
-    ListItem,
-    ListItemText,
-    Slide,
+    useMediaQuery
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
 import MacOSButtons from "../components/ui/Controls";
 import LogoutControls from "../components/ui/LogoutControls";
 import SideBar from "../components/SideBar";
 import SideDrawer from "../components/SideDrawer";
+import SearchIcon from "@mui/icons-material/Search";
+import ChatIcon from "@mui/icons-material/Chat";
 
 function Chatpage() {
-
     const [drawerOpen, setDrawerOpen] = useState(false);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+
+    const isMobile = useMediaQuery("(max-width:768px)");
+
+    // Toggle handlers (ensures exclusivity)
+    const toggleDrawer = () => {
+        setDrawerOpen(prev => {
+            if (!prev) setSidebarOpen(false); // close sidebar if opening drawer
+            return !prev;
+        });
+    };
+
+    const toggleSidebar = () => {
+        setSidebarOpen(prev => {
+            if (!prev) setDrawerOpen(false); // close drawer if opening sidebar
+            return !prev;
+        });
+    };
 
     return (
         <Container
@@ -35,43 +48,69 @@ function Chatpage() {
                 WebkitBackdropFilter: "blur(10px) saturate(180%)",
                 marginTop: "10vh",
                 position: "relative",
-                overflow: "hidden", // keep drawer inside
+                overflow: "hidden",
             }}
         >
+            {/* Header */}
             <Box display="flex" justifyContent="space-between" alignItems="center">
                 <MacOSButtons />
+
+                {/* Search icon */}
                 <Box
-                    color="inherit"
-                    onClick={() => setDrawerOpen(!drawerOpen)}
+                    onClick={toggleDrawer}
                     sx={{
                         display: "flex",
                         gap: "8px",
                         position: "absolute",
-                        top: "12px",
-                        left: "80px",
-                        width: "15px",
-                        height: "15px",
+                        top: "13px",
+                        left: "85px",
+                        width: "16px",
+                        height: "16px",
                         borderRadius: "50%",
-                        backgroundColor: "#ff3cf5ff",
                         alignItems: "center",
                         justifyContent: "center",
                         "&:hover": { transform: "scale(1.2)", cursor: "pointer" },
                         transition: "all 0.2s ease",
-                     }}
+                    }}
                 >
-                    <MenuIcon sx={{ fontSize: 10, color: "black" }} />
+                    <SearchIcon sx={{ fontSize: 23, color: "white" }} />
                 </Box>
+
+                {/* Sidebar icon only for mobile */}
+                {isMobile && (
+                    <Box
+                        onClick={toggleSidebar}
+                        sx={{
+                            display: "flex",
+                            gap: "8px",
+                            position: "absolute",
+                            top: "13px",
+                            left: "120px",
+                            width: "16px",
+                            height: "16px",
+                            borderRadius: "50%",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            "&:hover": { transform: "scale(1.2)", cursor: "pointer" },
+                            transition: "all 0.2s ease",
+                        }}
+                    >
+                        <ChatIcon sx={{ fontSize: 23, color: "white" }} />
+                    </Box>
+                )}
+
                 <LogoutControls />
             </Box>
 
-            {/* Smooth sliding drawer inside container */}
-            <SideDrawer drawerOpen={drawerOpen}/>
+            {/* Search drawer */}
+            <SideDrawer drawerOpen={drawerOpen} />
 
-            {/* Sidebar (other content) */}
-            {
-                drawerOpen ? <></> : <SideBar />
-            }
-            
+            {/* Sidebar */}
+            {isMobile ? (
+                sidebarOpen && <SideBar />
+            ) : (
+                !drawerOpen && <SideBar />
+            )}
         </Container>
     );
 }

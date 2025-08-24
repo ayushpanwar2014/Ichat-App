@@ -189,7 +189,7 @@ const authenticateUser = async (req, res, user) => {
 export const allUsers = async (req, res, next) => {
     const { userID } = req.user;
     const search = req.query.search || "";
-
+    
     try {
         let users = [];
 
