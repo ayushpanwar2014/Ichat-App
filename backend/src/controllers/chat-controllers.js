@@ -79,7 +79,7 @@ export const createGroupChat = async (req, res, next) => {
         const currentUserId = req.user.userID;
 
         // Validation
-        if (!chatName || !users || !Array.isArray(users) || users.length < 1) {
+        if (!chatName || !users || !Array.isArray(users) || users.length < 2) {
             return res.status(400).json({
                 success: false,
                 message: "Chat name and at least 2 users are required",
