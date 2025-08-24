@@ -6,7 +6,7 @@ const Chat_Router = express.Router();
 
 Chat_Router.post('/', verifyToken, accessChat);
 Chat_Router.get('/', verifyToken, fetchChats);
-Chat_Router.post('/group', verifyToken, createGroupChat);
+Chat_Router.post('/creategroup', verifyToken, createGroupChat);
 Chat_Router.put('/rename', verifyToken, renameGroup);
 Chat_Router.put('/groupremove', verifyToken, removeFromGroup);
 Chat_Router.put('/groupadd', verifyToken, addToGroup);

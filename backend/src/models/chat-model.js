@@ -61,6 +61,12 @@ ChatModelSchema.index(
     { unique: true, partialFilterExpression: { isGroupChat: false } }
 );
 
+// ✅ Unique compound index for group chats by name + exact members
+ChatModelSchema.index(
+    { isGroupChat: 1, chatName: 1, users: 1 },
+    { unique: true, partialFilterExpression: { isGroupChat: true } }
+);
+
 // ✅ Index for fetching all chats of a user quickly
 ChatModelSchema.index({ users: 1, isGroupChat: 1 });
 
