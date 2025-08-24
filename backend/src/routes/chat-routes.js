@@ -8,8 +8,8 @@ Chat_Router.post('/', verifyToken, accessChat);
 Chat_Router.get('/', verifyToken, fetchChats);
 Chat_Router.post('/creategroup', verifyToken, createGroupChat);
 Chat_Router.put('/renamechatgroup', verifyToken, renameGroup);
-Chat_Router.put('/groupremove', verifyToken, removeFromGroup);
-Chat_Router.put('/groupadd', verifyToken, addToGroup);
+Chat_Router.put('/addtogroup', verifyToken, addToGroup);
+Chat_Router.put('/removefromgroup', verifyToken, removeFromGroup);
 
 
 export default Chat_Router;

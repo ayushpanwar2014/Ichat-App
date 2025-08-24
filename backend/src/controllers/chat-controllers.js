@@ -43,7 +43,7 @@ export const accessChat = async (req, res) => {
         res.status(200).json({ success: true, chat });
 
     } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+        res.status(500).json({ success: false, message: "unauthorized access" });
     }
 };
 
@@ -135,15 +135,15 @@ export const createGroupChat = async (req, res, next) => {
         } catch (error) {
             await session.abortTransaction();
             session.endSession();
-            next({ status: 500, message: error.message || "Server Error" });
+            next({ status: 500, message: "unauthorized access" });
         }
 
-
     } catch (error) {
-        next({ status: 500, message: error.message || "Server Error" });
+        next({ status: 500, message: "unauthorized access" });
     }
 };
 
+//rename group
 export const renameGroup = async (req, res, next) => {
     try {
         const { chatId, newChatName } = req.body;
@@ -204,27 +204,121 @@ export const renameGroup = async (req, res, next) => {
             msg: "Group renamed successfully",
         });
     } catch (error) {
-        next({ status: 500, message: error.message || "Server Error" });
+        next({ status: 500, message: "unauthorized access" });
     }
 };
 
-
-export const removeFromGroup = async (req, res, next) => {
-    try {
-
-
-
-    } catch (error) {
-        next({ status: 401, message: "UnAuthorized User" });
-    }
-}
-
+//add to group
 export const addToGroup = async (req, res, next) => {
     try {
+        const { chatId, newUsers } = req.body; // newUsers = array of user IDs
+        const currentUserId = req.user.userID;
 
+        if (!chatId || !newUsers || !Array.isArray(newUsers) || newUsers.length === 0) {
+            return res.status(400).json({
+                success: false,
+                msg: "chatId and newUsers array are required",
+            });
+        }
 
+        // Fetch the chat
+        const chat = await ChatModel.findById(chatId);
+        if (!chat || !chat.isGroupChat) {
+            return res.status(404).json({
+                success: false,
+                msg: "Group chat not found",
+            });
+        }
+
+        // Only admin can add members
+        if (chat.groupAdmin.toString() !== currentUserId.toString()) {
+            return res.status(403).json({
+                success: false,
+                msg: "Only the group admin can add members",
+            });
+        }
+
+        // Exclude users who are already in the group
+        const currentUsersSet = new Set(chat.users.map(u => u.toString()));
+        const filteredUsers = newUsers
+            .map(u => u.toString())
+            .filter(u => !currentUsersSet.has(u));
+
+        if (filteredUsers.length === 0) {
+            return res.status(400).json({
+                success: false,
+                msg: "All provided users are already in the group",
+            });
+        }
+
+        // Add new members
+        chat.users.push(...filteredUsers);
+        chat.users = [...new Set(chat.users)]; // remove duplicates just in case
+        await chat.save();
+
+        // Populate users and admin
+        const updatedChat = await ChatModel.findById(chatId)
+            .populate("users", "-password -__v")
+            .populate("groupAdmin", "-password -__v")
+            .lean();
+
+        return res.status(200).json({
+            success: true,
+            data: updatedChat,
+            msg: `${filteredUsers.length} members added to the group`,
+        });
 
     } catch (error) {
-        next({ status: 401, message: "UnAuthorized User" });
+        next({ status: 500, message: "unauthorized access" });
     }
-}
+};
+
+//remove from group
+export const removeFromGroup = async (req, res, next) => {
+    try {
+        const { chatId, removeUsers } = req.body; // removeUsers = array of user IDs to remove
+        const currentUserId = req.user.userID;
+
+        if (!chatId || !removeUsers || !Array.isArray(removeUsers) || removeUsers.length === 0) {
+            return res.status(400).json({
+                success: false,
+                msg: "chatId and removeUsers array are required",
+            });
+        }
+
+        // Atomic removal and admin check
+        const updatedChat = await ChatModel.findOneAndUpdate(
+            { _id: chatId, groupAdmin: currentUserId, isGroupChat: true },
+            { $pull: { users: { $in: removeUsers.map(u => u.toString()) } } },
+            { new: true }
+        )
+            .populate("users", "-password -__v")
+            .populate("groupAdmin", "-password -__v")
+            .lean();
+
+        if (!updatedChat) {
+            return res.status(403).json({
+                success: false,
+                msg: "Only group admin can remove members or group not found",
+            });
+        }
+
+        // Ensure group still has at least 2 members
+        if (updatedChat.users.length < 2) {
+            return res.status(400).json({
+                success: false,
+                msg: "Group must have at least 2 members",
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            data: updatedChat,
+            msg: `${removeUsers.length} members removed from the group`,
+        });
+
+    } catch (error) {
+        next({ status: 500, message: "unauthorized access" });
+    }
+};
+
