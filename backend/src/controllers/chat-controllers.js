@@ -10,7 +10,7 @@ export const accessChat = async (req, res) => {
 
     try {
         if (!userID) {
-            return res.status(400).json({ success: false, message: "User ID is required" });
+            return res.status(400).json({ success: false, msg: "User ID is required" });
         }
 
         // Try to find existing private chat
@@ -82,7 +82,7 @@ export const createGroupChat = async (req, res, next) => {
         if (!chatName || !users || !Array.isArray(users) || users.length < 2) {
             return res.status(400).json({
                 success: false,
-                message: "Chat name and at least 2 users are required",
+                msg: "Chat name and at least 2 users are required",
             });
         }
 
@@ -103,7 +103,7 @@ export const createGroupChat = async (req, res, next) => {
                 session.endSession();
                 return res.status(409).json({
                     success: false,
-                    message: "A group with the same name and members already exists",
+                    msg: "A group with the same name and members already exists",
                 });
             }
 
@@ -130,7 +130,7 @@ export const createGroupChat = async (req, res, next) => {
             return res.status(201).json({
                 success: true,
                 data: newGroup[0],
-                message: "New group chat created successfully",
+                msg: "New group chat created successfully",
             });
         } catch (error) {
             await session.abortTransaction();
@@ -144,17 +144,70 @@ export const createGroupChat = async (req, res, next) => {
     }
 };
 
-
-
 export const renameGroup = async (req, res, next) => {
     try {
+        const { chatId, newChatName } = req.body;
+        const currentUserId = req.user.userID;
 
+        if (!chatId || !newChatName) {
+            return res.status(400).json({
+                success: false,
+                msg: "chatId and newChatName are required",
+            });
+        }
 
+        // Find the chat
+        const chat = await ChatModel.findById(chatId).lean();
+        if (!chat || !chat.isGroupChat) {
+            return res.status(404).json({
+                success: false,
+                msg: "Group chat not found",
+            });
+        }
 
+        // Check if current user is group admin
+        if (chat.groupAdmin.toString() !== currentUserId.toString()) {
+            return res.status(403).json({
+                success: false,
+                msg: "Only the group admin can rename the group",
+            });
+        }
+
+        // Check if a group with same name and same members already exists
+        const duplicateGroup = await ChatModel.findOne({
+            isGroupChat: true,
+            chatName: newChatName,
+            users: { $size: chat.users.length, $all: chat.users },
+            _id: { $ne: chatId }, // exclude current chat
+        }).lean();
+
+        if (duplicateGroup) {
+            return res.status(409).json({
+                success: false,
+                msg: "A group with the same name and members already exists",
+            });
+        }
+
+        // Rename the group
+        const updatedChat = await ChatModel.findByIdAndUpdate(
+            chatId,
+            { chatName: newChatName },
+            { new: true }
+        )
+            .populate("users", "-password -__v")
+            .populate("groupAdmin", "-password -__v")
+            .lean();
+
+        return res.status(200).json({
+            success: true,
+            data: updatedChat,
+            msg: "Group renamed successfully",
+        });
     } catch (error) {
-        next({ status: 401, message: "UnAuthorized User" });
+        next({ status: 500, message: error.message || "Server Error" });
     }
-}
+};
+
 
 export const removeFromGroup = async (req, res, next) => {
     try {
