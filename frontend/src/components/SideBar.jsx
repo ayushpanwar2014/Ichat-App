@@ -74,6 +74,7 @@ export default function SideBar() {
                 border: "0.5px solid rgba(255, 255, 255, 0.12)",
                 flexDirection: "column",
                 gap: { xs: 1, sm: 2 },
+                zIndex: 0
             }}
         >
             {/* 🔹 Header: My Chats + New Group */}

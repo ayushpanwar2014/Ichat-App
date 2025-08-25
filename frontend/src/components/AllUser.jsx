@@ -10,7 +10,7 @@ export default function AllUser({ toggleSidebar }) {
               display: "flex",
               gap: "8px",
               position: "absolute",
-              top: "13px",
+              top: "12px",
               left: "145px",
               width: "16px",
               height: "16px",
@@ -21,7 +21,7 @@ export default function AllUser({ toggleSidebar }) {
               transition: "all 0.2s ease",
           }}
       >
-      <PeopleIcon sx={{ fontSize: 30, color: "white" }} />
+      <PeopleIcon sx={{ fontSize: 28, color: "white" }} />
         </Box> 
   )
 }
