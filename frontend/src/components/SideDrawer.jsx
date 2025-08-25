@@ -62,13 +62,31 @@ export default function SideDrawer({ drawerOpen }) {
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         sx={{
-                            height: 50,
                             backgroundColor: "rgba(255,255,255,0.05)",
                             borderRadius: 5,
-                            "& .MuiInputBase-input": { color: "whitesmoke", },
-                            "& .MuiInputLabel-root": { color: "whitesmoke" },
+                            "& .MuiInputBase-input": {
+                                color: "whitesmoke",
+                            },
+                            "& .MuiInputLabel-root": {
+                                color: "whitesmoke",
+                            },
                             "& .MuiOutlinedInput-root": {
                                 "& fieldset": { border: "none" },
+                                "&:hover fieldset": { border: "none" },
+                                "&.Mui-focused fieldset": { border: "none" },
+                            },
+                            // ✅ Fix autofill styles
+                            "& input:-webkit-autofill": {
+                                WebkitBoxShadow: "0 0 0 100px rgba(255,255,255,0.05) inset",
+                                borderRadius: 5,
+                                WebkitTextFillColor: "whitesmoke",
+                                caretColor: "whitesmoke",
+                                transition: "background-color 9999s ease-in-out 0s",
+                            },
+                            "& input:-webkit-autofill:focus": {
+                                WebkitBoxShadow: "0 0 0 100px rgba(255,255,255,0.05) inset",
+                                WebkitTextFillColor: "whitesmoke",
+                                caretColor: "whitesmoke",
                             },
                         }}
                     />

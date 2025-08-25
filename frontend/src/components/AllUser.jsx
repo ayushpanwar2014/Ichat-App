@@ -1,7 +1,7 @@
-import ChatIcon from "@mui/icons-material/Chat";
 import { Box } from '@mui/material';
+import PeopleIcon from "@mui/icons-material/People";
 
-export default function MessageIcon({ toggleSidebar }) {
+export default function AllUser({ toggleSidebar }) {
   return (
 
       <Box
@@ -11,7 +11,7 @@ export default function MessageIcon({ toggleSidebar }) {
               gap: "8px",
               position: "absolute",
               top: "13px",
-              left: "120px",
+              left: "145px",
               width: "16px",
               height: "16px",
               borderRadius: "50%",
@@ -21,7 +21,7 @@ export default function MessageIcon({ toggleSidebar }) {
               transition: "all 0.2s ease",
           }}
       >
-          <ChatIcon sx={{ fontSize: 23, color: "white" }} />
+      <PeopleIcon sx={{ fontSize: 30, color: "white" }} />
         </Box> 
   )
 }

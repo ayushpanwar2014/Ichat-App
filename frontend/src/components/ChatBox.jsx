@@ -83,12 +83,35 @@ function ChatBox() {
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                    InputProps={{
-                        sx: {
-                            backgroundColor: "rgba(255, 255, 255, 0.05)",
-                            borderRadius: "12px",
-                            color: "white",
+                    sx={{
+                        "& .MuiOutlinedInput-root": {
+                            backgroundColor: "rgba(255,255,255,0.05)",
+                            borderRadius: 5,
+                            "& fieldset": { border: "none" }, // normal
+                            "&:hover fieldset": { border: "none" }, // hover
+                            "&.Mui-focused fieldset": { border: "none" }, // focused
+                            color: "whitesmoke",
                         },
+                        "& .MuiInputBase-input": {
+                            color: "whitesmoke",
+                        },
+                        "& .MuiInputLabel-root": {
+                            color: "whitesmoke",
+                        },
+                        "& input:-webkit-autofill": {
+                            WebkitBoxShadow: "0 0 0 100px rgba(255,255,255,0.05) inset",
+                            WebkitTextFillColor: "whitesmoke",
+                            caretColor: "whitesmoke",
+                            borderRadius: 5,
+                            transition: "background-color 9999s ease-in-out 0s",
+                        },
+                        "& input:-webkit-autofill:focus": {
+                            WebkitBoxShadow: "0 0 0 100px rgba(255,255,255,0.05) inset",
+                            WebkitTextFillColor: "whitesmoke",
+                            caretColor: "whitesmoke",
+                        },
+                    }}
+                    InputProps={{
                         startAdornment: (
                             <InputAdornment position="start">
                                 <IconButton sx={{ color: "white" }}>
@@ -105,6 +128,7 @@ function ChatBox() {
                         ),
                     }}
                 />
+
             </Box>
         </Box>
     );

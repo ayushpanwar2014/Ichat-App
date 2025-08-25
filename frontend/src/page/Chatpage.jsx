@@ -4,7 +4,7 @@ import MacOSButtons from "../components/ui/Controls";
 import ProfileControls from "../components/ui/ProfileControls";
 import SideBar from "../components/SideBar";
 import SideDrawer from "../components/SideDrawer";
-import MessageIcon from "../components/MessageIcon";
+import AllUser from "../components/AllUser";
 import SearchButton from "../components/SearchIcon";
 import ChatBoxIcon from "../components/ChatBoxIcon"; // ✅ New icon
 import ChatBox from "../components/ChatBox";
@@ -65,7 +65,7 @@ function Chatpage() {
                 <SearchButton toggleDrawer={toggleDrawer} />
                 {isMobile && (
                     <>
-                        <MessageIcon toggleSidebar={toggleSidebar} />
+                        <AllUser toggleSidebar={toggleSidebar} />
                         <ChatBoxIcon toggleChatBox={toggleChatBox} /> {/* ✅ new chatbox icon */}
                     </>
                 )}

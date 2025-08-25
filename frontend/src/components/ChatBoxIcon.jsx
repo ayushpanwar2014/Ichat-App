@@ -10,9 +10,10 @@ function ChatBoxIcon({ toggleChatBox }) {
                 gap: "8px",
                 position: "absolute",
                 top: "1px",
-                left: "150px",
+                left: "170px",
                 color: "whitesmoke",
-                "&:hover": { backgroundColor: "rgba(255, 255, 255, 0.1)" }
+                "&:hover": { transform: "scale(1.2)", cursor: "pointer" },
+                transition: "all 0.2s ease",
             }}
         >
             <ChatBubbleOutlineIcon />
