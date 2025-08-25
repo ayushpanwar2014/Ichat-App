@@ -5,11 +5,13 @@ import {
     useMediaQuery
 } from "@mui/material";
 import MacOSButtons from "../components/ui/Controls";
-import LogoutControls from "../components/ui/LogoutControls";
+import ProfileControls from "../components/ui/ProfileControls";
 import SideBar from "../components/SideBar";
 import SideDrawer from "../components/SideDrawer";
-import SearchIcon from "@mui/icons-material/Search";
-import ChatIcon from "@mui/icons-material/Chat";
+
+import MessageIcon from "../components/MessageIcon";
+import SearchButton from "../components/SearchIcon";
+
 
 function Chatpage() {
     const [drawerOpen, setDrawerOpen] = useState(false);
@@ -56,50 +58,14 @@ function Chatpage() {
                 <MacOSButtons />
 
                 {/* Search icon */}
-                <Box
-                    onClick={toggleDrawer}
-                    sx={{
-                        display: "flex",
-                        gap: "8px",
-                        position: "absolute",
-                        top: "13px",
-                        left: "85px",
-                        width: "16px",
-                        height: "16px",
-                        borderRadius: "50%",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        "&:hover": { transform: "scale(1.2)", cursor: "pointer" },
-                        transition: "all 0.2s ease",
-                    }}
-                >
-                    <SearchIcon sx={{ fontSize: 23, color: "white" }} />
-                </Box>
+                <SearchButton toggleDrawer={toggleDrawer} />
 
                 {/* Sidebar icon only for mobile */}
                 {isMobile && (
-                    <Box
-                        onClick={toggleSidebar}
-                        sx={{
-                            display: "flex",
-                            gap: "8px",
-                            position: "absolute",
-                            top: "13px",
-                            left: "120px",
-                            width: "16px",
-                            height: "16px",
-                            borderRadius: "50%",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            "&:hover": { transform: "scale(1.2)", cursor: "pointer" },
-                            transition: "all 0.2s ease",
-                        }}
-                    >
-                        <ChatIcon sx={{ fontSize: 23, color: "white" }} />
-                    </Box>
+                    <MessageIcon toggleSidebar={toggleSidebar}/>
                 )}
 
-                <LogoutControls />
+                <ProfileControls />
             </Box>
 
             {/* Search drawer */}

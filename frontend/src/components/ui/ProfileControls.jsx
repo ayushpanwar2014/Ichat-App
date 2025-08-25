@@ -16,7 +16,7 @@ import CloseIcon from "@mui/icons-material/Close";
 
 const notificationCount = 3;
 
-export default function LogoutControls() {
+export default function ProfileControls() {
     const { user } = useContext(AppContext);
     const { fetchLogout } = useContext(AppContext);
 
@@ -118,12 +118,25 @@ export default function LogoutControls() {
             </Box>
 
             {/* Profile Dialog */}
-            <Dialog open={openProfile} onClose={() => setOpenProfile(false)}>
+            <Dialog
+                open={openProfile}
+                onClose={() => setOpenProfile(false)}
+                PaperProps={{
+                    sx: {
+                        backgroundColor: "rgba(101, 38, 38, 0.35)",
+                        border: "0.5px solid rgba(255, 255, 255, 0.12)",
+                        borderRadius: 3, // optional: smoother edges
+                        backdropFilter: "blur(10px) saturate(180%)", // matches your glassmorphism
+                        WebkitBackdropFilter: "blur(10px) saturate(180%)",
+                        color: "whitesmoke", // makes text visible on dark bg
+                    }
+                }}
+            >
                 <DialogTitle
                     sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
                 >
                     Profile
-                    <IconButton onClick={() => setOpenProfile(false)}>
+                    <IconButton onClick={() => setOpenProfile(false)} sx={{ color: "whitesmoke" }}>
                         <CloseIcon />
                     </IconButton>
                 </DialogTitle>
@@ -132,12 +145,15 @@ export default function LogoutControls() {
                         src={user?.image}
                         sx={{ width: 80, height: 80, margin: "auto", mb: 2 }}
                     />
-                    <Typography variant="h6">{user?.name}</Typography>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="h6" sx={{ color: "whitesmoke" }}>
+                        {user?.name}
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.6)" }}>
                         {user?.email}
                     </Typography>
                 </DialogContent>
             </Dialog>
+
         </>
     );
 }

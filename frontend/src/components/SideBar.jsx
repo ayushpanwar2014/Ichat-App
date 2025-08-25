@@ -1,11 +1,51 @@
-import { Box, List, ListItem, ListItemText, Avatar, Typography, Divider } from "@mui/material";
-import { useContext } from "react";
+import {
+    Box,
+    Typography,
+    Divider,
+    Button
+} from "@mui/material";
+import { useContext, useState } from "react";
 import { ChatContext } from "../context/exportChatContext";
 import { AppContext } from "../context/exportAppContext";
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import AddGroup from "./AddGroup";
+import ChatList from "./ChatList";
 
 export default function SideBar() {
     const { AllUsersChats } = useContext(ChatContext);
-    const { user } = useContext(AppContext);
+    const { user } = useContext(AppContext); // ✅ assuming you have allUsers here
+    const [openAddGroup, setOpenAddGroup] = useState(false);
+
+    const handleCreateGroup = () => {
+        setOpenAddGroup(true);
+    };
+
+    const handleCloseGroup = () => {
+        setOpenAddGroup(false);
+    };
+
+
+    // Extract users only from chats where chatName === "sender"
+    // Extract users only from chats where chatName === "sender"
+    const allUniqueUsers = Array.from(
+        new Map(
+            AllUsersChats
+                .filter(chat => chat.chatName === "sender") // only sender chats
+                .flatMap(chat => chat.users) // flatten all users
+                .filter(u => u._id !== user._id) // 🚫 exclude yourself
+                .map(u => [u._id, u]) // deduplicate by id
+        ).values()
+    );
+
+
+    
+
+    const handleGroupCreate = (groupData) => {
+        console.log("Group created:", groupData);
+        // 🔹 You can now call your backend API here to create the group
+        // Example: axios.post("/api/group", groupData);
+        setOpenAddGroup(false);
+    };
 
     return (
         <Box
@@ -23,121 +63,56 @@ export default function SideBar() {
                 gap: { xs: 1, sm: 2 },
             }}
         >
-            {/* 🔹 Headline */}
-            <Typography
-                variant="h6"
+            {/* 🔹 Header: My Chats + New Group */}
+            <Box
                 sx={{
-                    fontSize: { xs: "0.9rem", sm: "1.05rem" },
-                    fontWeight: 600,
-                    color: "whitesmoke",
+                    display: "flex",
+                    justifyContent: "space-around",
+                    alignItems: "center",
                     mb: 1,
-                    letterSpacing: 0.5,
-                    textAlign: 'center',
-
                 }}
             >
-                My Chats
-            </Typography>
+                <Typography
+                    variant="h6"
+                    sx={{
+                        fontSize: { xs: "0.9rem", sm: "1.05rem" },
+                        fontWeight: 600,
+                        color: "whitesmoke",
+                        letterSpacing: 0.5,
+                    }}
+                >
+                    My Chats
+                </Typography>
+
+                {/* New Group Button */}
+                <Button
+                    size="large"
+                    onClick={handleCreateGroup}
+                    variant="contained"
+                    sx={{
+                        fontSize: 13,
+                        borderRadius: 5,
+                        backgroundColor: "rgba(255,255,255,0.15)",
+                        color: "whitesmoke",
+                        "&:hover": { backgroundColor: "rgba(255,255,255,0.25)" },
+                    }}
+                >
+                    <GroupAddIcon sx={{ fontSize: 18, color: "white" }} />
+                </Button>
+            </Box>
+
             <Divider sx={{ borderColor: "rgba(255,255,255,0.12)" }} />
 
             {/* 🔹 Chats List */}
-            <Box
-                sx={{
-                    flex: 1,
-                    overflowY: "auto",
-                    maxHeight: "100vh",
-                    paddingRight: 1,
-                    paddingBottom: 3, // ensures last item fully visible
-                    scrollBehavior: "smooth",
+            <ChatList user={user} AllUsersChats={AllUsersChats} />
 
-                    "&::-webkit-scrollbar": { display: "none" },
-
-                    scrollbarWidth: "none",
-                    scrollbarColor: "transparent transparent",
-                }}
-            >
-                <List>
-                    {AllUsersChats.map((chat, index) => {
-                        const isGroup = chat.isGroupChat;
-                        const otherUser = !isGroup
-                            ? chat.users.find((u) => u._id !== user._id)
-                            : null;
-
-                        return (
-                            <ListItem
-                                key={chat._id || index}
-                                sx={{
-                                    borderBottom: "0.5px solid rgba(255, 255, 255, 0.28)",
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    alignItems: "flex-start",
-                                    borderRadius: 12,
-                                    gap: 0.3,
-                                    marginTop: 1,
-                                    "&:hover": {
-                                        backgroundColor: "rgba(255,255,255,0.05)",
-                                        cursor: "pointer",
-                                    },
-                                    transition: "all 0.2s ease",
-                                    paddingY: { xs: 0.5, sm: 1 },
-                                    paddingX: { xs: 1, sm: 2 },
-                                }}
-                            >
-                                {/* Avatar + Chat Name */}
-                                <Box
-                                    sx={{ display: "flex", alignItems: "center", gap: { xs: 0.7, sm: 1 } }}
-                                >
-                                    <Avatar
-                                        src={isGroup ? user.image : otherUser?.image}
-                                        alt={isGroup ? chat.chatName : otherUser?.name}
-                                        sx={{ width: { xs: 28, sm: 35 }, height: { xs: 28, sm: 35 } }}
-                                    />
-                                    <ListItemText
-                                        primary={isGroup ? chat.chatName : otherUser?.name}
-                                        primaryTypographyProps={{
-                                            sx: {
-                                                fontSize: { xs: "0.75rem", sm: "0.85rem" },
-                                                color: "whitesmoke",
-                                                fontWeight: 500,
-                                                whiteSpace: "nowrap",
-                                                overflow: "hidden",
-                                                textOverflow: "ellipsis",
-                                                maxWidth: { xs: "120px", sm: "200px" },
-                                            },
-                                        }}
-                                    />
-                                </Box>
-
-                                {/* Group Members Preview */}
-                                {isGroup && (
-                                    <Typography
-                                        sx={{
-                                            fontSize: { xs: "0.65rem", sm: "0.7rem" },
-                                            color: "rgba(255,255,255,0.6)",
-                                            marginLeft: { xs: 4, sm: 5 },
-                                            whiteSpace: "nowrap",
-                                            overflow: "hidden",
-                                            textOverflow: "ellipsis",
-                                            maxWidth: { xs: "150px", sm: "220px" },
-                                            display: { sm: "none", lg: "block" },
-                                            flexShrink: 1,
-                                        }}
-                                        noWrap
-                                    >
-                                        group:{" "}
-                                        {chat.users
-                                            .slice(0, 2)
-                                            .map((u) => (u._id === user._id ? "You" : u.name))
-                                            .join(", ")}
-                                        {chat.users.length > 2 && " ..."}
-                                    </Typography>
-                                )}
-                            </ListItem>
-                        );
-                    })}
-                </List>
-            </Box>
-
+            {/* 🔹 Add Group Dialog Integration */}
+            <AddGroup
+                open={openAddGroup}
+                onClose={handleCloseGroup}
+                allUsers={allUniqueUsers} // ✅ pass all users list
+                onCreate={handleGroupCreate}
+            />
         </Box>
     );
 }
