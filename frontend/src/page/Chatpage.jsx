@@ -1,35 +1,42 @@
 import { useState } from "react";
-import {
-    Container,
-    Box,
-    useMediaQuery
-} from "@mui/material";
+import { Container, Box, useMediaQuery } from "@mui/material";
 import MacOSButtons from "../components/ui/Controls";
 import ProfileControls from "../components/ui/ProfileControls";
 import SideBar from "../components/SideBar";
 import SideDrawer from "../components/SideDrawer";
-
 import MessageIcon from "../components/MessageIcon";
 import SearchButton from "../components/SearchIcon";
-
+import ChatBoxIcon from "../components/ChatBoxIcon"; // ✅ New icon
+import ChatBox from "../components/ChatBox";
 
 function Chatpage() {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [chatBoxOpen, setChatBoxOpen] = useState(true);
 
     const isMobile = useMediaQuery("(max-width:768px)");
 
-    // Toggle handlers (ensures exclusivity)
+    // ✅ Toggle Drawer (independent)
     const toggleDrawer = () => {
-        setDrawerOpen(prev => {
-            if (!prev) setSidebarOpen(false); // close sidebar if opening drawer
+        setDrawerOpen(prev => !prev);
+    };
+
+    // ✅ Toggle Sidebar (closes chatBox)
+    const toggleSidebar = () => {
+        setSidebarOpen(prev => {
+            if (!prev) {
+                setChatBoxOpen(false); // close chatbox if opening sidebar
+            }
             return !prev;
         });
     };
 
-    const toggleSidebar = () => {
-        setSidebarOpen(prev => {
-            if (!prev) setDrawerOpen(false); // close drawer if opening sidebar
+    // ✅ Toggle ChatBox (closes sidebar)
+    const toggleChatBox = () => {
+        setChatBoxOpen(prev => {
+            if (!prev) {
+                setSidebarOpen(false); // close sidebar if opening chatbox
+            }
             return !prev;
         });
     };
@@ -45,7 +52,6 @@ function Chatpage() {
                 border: "1px solid rgba(255, 255, 255, 0.125)",
                 display: "flex",
                 flexDirection: "column",
-                justifyContent: "space-between",
                 backdropFilter: "blur(10px) saturate(180%)",
                 WebkitBackdropFilter: "blur(10px) saturate(180%)",
                 marginTop: "10vh",
@@ -53,32 +59,39 @@ function Chatpage() {
                 overflow: "hidden",
             }}
         >
-            {/* Header */}
+            {/* 🔹 Header */}
             <Box display="flex" justifyContent="space-between" alignItems="center">
                 <MacOSButtons />
-
-                {/* Search icon */}
                 <SearchButton toggleDrawer={toggleDrawer} />
-
-                {/* Sidebar icon only for mobile */}
                 {isMobile && (
-                    <MessageIcon toggleSidebar={toggleSidebar}/>
+                    <>
+                        <MessageIcon toggleSidebar={toggleSidebar} />
+                        <ChatBoxIcon toggleChatBox={toggleChatBox} /> {/* ✅ new chatbox icon */}
+                    </>
                 )}
-
                 <ProfileControls />
             </Box>
 
-            {/* Search drawer */}
-            <SideDrawer drawerOpen={drawerOpen} />
+            {/* 🔹 Main Section */}
+            <Box sx={{ display: "flex", height: "100%", justifyContent: "space-between" }}>
+                {/* ✅ Laptop / PC Mode */}
+                {!isMobile && (
+                    <>
+                        <SideBar />
+                        <ChatBox />
+                        <SideDrawer drawerOpen={drawerOpen} />
+                    </>
+                )}
 
-            {/* Sidebar */}
-            {isMobile ? (
-                sidebarOpen && <SideBar />
-            ) : (
-                !drawerOpen && <SideBar />
-            )}
-
-            
+                {/* ✅ Mobile Mode */}
+                {isMobile && (
+                    <>
+                        {sidebarOpen && <SideBar />}
+                        {chatBoxOpen && <ChatBox />}
+                        {drawerOpen && <SideDrawer drawerOpen={drawerOpen} />}
+                    </>
+                )}
+            </Box>
         </Container>
     );
 }

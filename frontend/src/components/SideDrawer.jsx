@@ -26,13 +26,16 @@ export default function SideDrawer({ drawerOpen }) {
                     top: 0,
                     left: 0,
                     marginTop: 5,
-                    width: { xs: "100%", sm: "30%", md: "24%", lg: "23.3%" },
+                    width: { xs: "100%", sm: "30%", md: "24%", lg: "23.3%" }, // ✅ responsive
                     height: "100%",
-                    backgroundColor: "rgba(7, 6, 6, 0)",
+                    backgroundColor: "rgba(29, 6, 6, 0.35)", // ✅ must be semi-transparent
                     border: "0.5px solid rgba(255, 255, 255, 0.12)",
-                    borderTopRightRadius: 12,
+                    borderTopRightRadius: { xs: 0, sm: 12 }, // ✅ no radius on mobile full width
                     zIndex: 10,
                     padding: 2,
+                    backdropFilter: "blur(12px) saturate(180%)",    // ✅ blur effect
+                    WebkitBackdropFilter: "blur(12px) saturate(180%)", // ✅ iOS/Safari
+                    boxShadow: "0 4px 20px rgba(0,0,0,0.25)", // ✅ subtle shadow for depth
                 }}
             >
                 {/* Title */}
