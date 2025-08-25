@@ -88,7 +88,7 @@ export default function SideDrawer({ drawerOpen }) {
                 {/* Loader OR User List */}
                 {loading ? (
                     <List>
-                        {[1, 2, 3, 4, 5].map((i) => (
+                        {[1, 2, 3, 4, 5, 6].map((i) => (
                             <ListItem
                                 key={i}
                                 sx={{

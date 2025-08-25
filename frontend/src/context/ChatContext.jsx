@@ -72,8 +72,6 @@ const ChatContextProvider = (props) => {
         }
     };
 
-
-
     useEffect(() => {
 
         if (user?.name){
@@ -91,7 +89,9 @@ const ChatContextProvider = (props) => {
         searchUsers,
         loading, // 🔹 expose loading
         onHandleAccessChat,
-        AllUsersChats
+        AllUsersChats,
+        onFetchAllUserChats
+        
     };
 
     return (

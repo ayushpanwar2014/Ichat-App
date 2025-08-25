@@ -17,6 +17,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 
 export default function AddGroup({ open, onClose, allUsers, onCreate }) {
+
     const [groupName, setGroupName] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedUsers, setSelectedUsers] = useState([]);
@@ -37,7 +38,7 @@ export default function AddGroup({ open, onClose, allUsers, onCreate }) {
     };
 
     const handleCreate = () => {
-        if (!groupName.trim() || selectedUsers.length === 0) return;
+        if (!groupName.trim() || selectedUsers.length < 2) return;
         onCreate({ name: groupName, members: selectedUsers });
         setGroupName("");
         setSelectedUsers([]);
@@ -57,7 +58,7 @@ export default function AddGroup({ open, onClose, allUsers, onCreate }) {
                     backdropFilter: "blur(10px) saturate(180%)",
                     WebkitBackdropFilter: "blur(10px) saturate(180%)",
                     color: "whitesmoke",
-                    width: 400,
+                    width: 500,
 
                 },
             }}
@@ -127,6 +128,7 @@ export default function AddGroup({ open, onClose, allUsers, onCreate }) {
                                 color: "whitesmoke",
                                 mr: 1,
                                 mb: 1,
+                                mt: 1
                             }}
                         />
                     ))}
@@ -179,7 +181,7 @@ export default function AddGroup({ open, onClose, allUsers, onCreate }) {
                 <Button
                     variant="contained"
                     onClick={handleCreate}
-                    disabled={!groupName.trim() || selectedUsers.length === 0}
+                    disabled={!groupName.trim() || selectedUsers.length < 2}
                     sx={{
                         alignItems: "center",
                         height: 50,

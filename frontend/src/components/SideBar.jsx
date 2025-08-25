@@ -10,9 +10,11 @@ import { AppContext } from "../context/exportAppContext";
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import AddGroup from "./AddGroup";
 import ChatList from "./ChatList";
+import axios from "axios";
+import { notifyError, notifySuccess } from "./notification/toast";
 
 export default function SideBar() {
-    const { AllUsersChats } = useContext(ChatContext);
+    const { AllUsersChats, backendURL, onFetchAllUserChats } = useContext(ChatContext);
     const { user } = useContext(AppContext); // ✅ assuming you have allUsers here
     const [openAddGroup, setOpenAddGroup] = useState(false);
 
@@ -37,14 +39,25 @@ export default function SideBar() {
         ).values()
     );
 
-
-    
-
-    const handleGroupCreate = (groupData) => {
+    const handleGroupCreate = async (groupData) => {
         console.log("Group created:", groupData);
-        // 🔹 You can now call your backend API here to create the group
-        // Example: axios.post("/api/group", groupData);
-        setOpenAddGroup(false);
+
+        const { name, members } = groupData;
+
+        const users = members.map((user) => user._id);
+        const chatName = name;
+        try {
+            const resp = await axios.post(backendURL +'/api/chat/creategroup',{chatName, users}, {withCredentials: true} );
+
+            if(resp.data.success){
+                notifySuccess(resp.data.msg);
+                await onFetchAllUserChats();
+            }
+
+        } catch (error) {
+            console.log(error);
+            notifyError(error.response?.data?.msg);
+        }
     };
 
     return (
