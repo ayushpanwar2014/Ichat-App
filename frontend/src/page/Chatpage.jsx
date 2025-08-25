@@ -31,6 +31,19 @@ function Chatpage() {
         });
     };
 
+    const OnClickOfUserChat = () => {
+        console.log("hell");
+
+        if (isMobile) {
+            // 📱 Mobile → close sidebar, open chatbox
+            setChatBoxOpen(true);
+            setSidebarOpen(false);
+        } else {
+            // 💻 Desktop → just make sure chatbox stays visible
+            setChatBoxOpen(true);
+        }
+    };
+
     // ✅ Toggle ChatBox (closes sidebar)
     const toggleChatBox = () => {
         setChatBoxOpen(prev => {
@@ -77,7 +90,7 @@ function Chatpage() {
                 {/* ✅ Laptop / PC Mode */}
                 {!isMobile && (
                     <>
-                        <SideBar />
+                        <SideBar toggleSidebar={toggleSidebar} />
                         <ChatBox />
                         <SideDrawer drawerOpen={drawerOpen} />
                     </>
@@ -86,7 +99,7 @@ function Chatpage() {
                 {/* ✅ Mobile Mode */}
                 {isMobile && (
                     <>
-                        {sidebarOpen && <SideBar />}
+                        {sidebarOpen && <SideBar OnClickOfUserChat={OnClickOfUserChat} />}
                         {chatBoxOpen && <ChatBox />}
                         {drawerOpen && <SideDrawer drawerOpen={drawerOpen} />}
                     </>

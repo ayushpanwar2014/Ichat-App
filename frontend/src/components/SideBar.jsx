@@ -13,7 +13,7 @@ import ChatList from "./ChatList";
 import axios from "axios";
 import { notifyError, notifySuccess } from "./notification/toast";
 
-export default function SideBar() {
+export default function SideBar({ OnClickOfUserChat }) {
     const { AllUsersChats, backendURL, onFetchAllUserChats } = useContext(ChatContext);
     const { user } = useContext(AppContext); // ✅ assuming you have allUsers here
     const [openAddGroup, setOpenAddGroup] = useState(false);
@@ -118,7 +118,7 @@ export default function SideBar() {
             <Divider sx={{ borderColor: "rgba(255,255,255,0.12)" }} />
 
             {/* 🔹 Chats List */}
-            <ChatList user={user} AllUsersChats={AllUsersChats} />
+            <ChatList OnClickOfUserChat={OnClickOfUserChat}  user={user} AllUsersChats={AllUsersChats} />
 
             {/* 🔹 Add Group Dialog Integration */}
             <AddGroup

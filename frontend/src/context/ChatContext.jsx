@@ -72,6 +72,9 @@ const ChatContextProvider = (props) => {
         }
     };
 
+    // ChatContextProvider.jsx
+    const [selectedChat, setSelectedChat] = useState(null);
+
     useEffect(() => {
 
         if (user?.name){
@@ -90,7 +93,9 @@ const ChatContextProvider = (props) => {
         loading, // 🔹 expose loading
         onHandleAccessChat,
         AllUsersChats,
-        onFetchAllUserChats
+        onFetchAllUserChats,
+        selectedChat,
+        setSelectedChat
         
     };
 
