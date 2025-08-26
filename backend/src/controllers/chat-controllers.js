@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 
 
 // access chat between 2 users, or create if it doesn’t exist
-export const accessChat = async (req, res) => {
+export const accessChat = async (req, res, next) => {
     const { userID } = req.body;  // other user
     const currentUser = req.user.userID; // logged-in user
 
@@ -56,7 +56,8 @@ export const accessChat = async (req, res) => {
         }
 
     } catch (error) {
-        res.status(500).json({ success: false, message: "unauthorized access" });
+
+        next({ status: 500, message: "unauthorized access" })
     }
 };
 

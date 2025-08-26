@@ -8,6 +8,7 @@ import dotenv from 'dotenv';
 import { dbConnected } from './config/dbConnect.js';
 import User_Router from './src/routes/user-routes.js';
 import Chat_Router from './src/routes/chat-routes.js';
+import Message_Router from './src/routes/message-routes.js';
 dotenv.config();
 
 // app config
@@ -29,6 +30,7 @@ app.set('trust proxy', false);
 //api end point
 app.use('/api/user', User_Router);
 app.use('/api/chat', Chat_Router);
+app.use('/api/message', Message_Router);
 
 //error middleware
 app.use(errorMiddlewares);
