@@ -299,7 +299,34 @@ export const removeFromGroup = async (req, res, next) => {
             });
         }
 
-        // Atomic removal and admin check
+        // Find chat first
+        const findChat = await ChatModel.findById(chatId).populate("users", "_id");
+
+        if (!findChat) {
+            return res.status(404).json({
+                success: false,
+                msg: "Group not found",
+            });
+        }
+
+        // Check if current user is admin
+        if (findChat.groupAdmin.toString() !== currentUserId.toString()) {
+            return res.status(403).json({
+                success: false,
+                msg: "Only group admin can remove members",
+            });
+        }
+
+        // Ensure at least 3 members remain after removal
+        const remainingUsersCount = findChat.users.length - removeUsers.length;
+        if (remainingUsersCount < 3) {
+            return res.status(400).json({
+                success: false,
+                msg: "A group must have at least 3 members. Cannot remove users.",
+            });
+        }
+
+        // Atomic removal
         const updatedChat = await ChatModel.findOneAndUpdate(
             { _id: chatId, groupAdmin: currentUserId, isGroupChat: true },
             { $pull: { users: { $in: removeUsers.map(u => u.toString()) } } },
@@ -308,21 +335,6 @@ export const removeFromGroup = async (req, res, next) => {
             .populate("users", "-password -__v")
             .populate("groupAdmin", "-password -__v")
             .lean();
-
-        if (!updatedChat) {
-            return res.status(403).json({
-                success: false,
-                msg: "Only group admin can remove members or group not found",
-            });
-        }
-
-        // Ensure group still has at least 2 members
-        if (updatedChat.users.length < 2) {
-            return res.status(400).json({
-                success: false,
-                msg: "Group must have at least 2 members",
-            });
-        }
 
         return res.status(200).json({
             success: true,
@@ -334,4 +346,5 @@ export const removeFromGroup = async (req, res, next) => {
         next({ status: 500, message: "unauthorized access" });
     }
 };
+
 

@@ -1,10 +1,11 @@
 import { useContext } from "react";
 import { ChatContext } from "../context/exportChatContext";
-import { Box, List, ListItem, Avatar, ListItemText, Typography, Chip } from "@mui/material";
+import { Box, List, ListItem, Avatar, ListItemText, Typography, Chip, useMediaQuery } from "@mui/material";
 import GroupIcon from "@mui/icons-material/Group"; // <-- Import Group icon
 
 export default function ChatList({ AllUsersChats, user, OnClickOfUserChat }) {
     const { setSelectedChat } = useContext(ChatContext);
+    const isMobile = useMediaQuery("(max-width:768px)");
 
     return (
         <Box
@@ -32,7 +33,7 @@ export default function ChatList({ AllUsersChats, user, OnClickOfUserChat }) {
                             key={chat._id || index}
                             onClick={() => {
                                 setSelectedChat(chat);
-                                OnClickOfUserChat();
+                                isMobile && OnClickOfUserChat();
                             }}
                             sx={{
                                 borderBottom: "0.5px solid rgba(255, 255, 255, 0.28)",

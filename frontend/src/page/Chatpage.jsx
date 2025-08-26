@@ -32,8 +32,6 @@ function Chatpage() {
     };
 
     const OnClickOfUserChat = () => {
-        console.log("hell");
-
         if (isMobile) {
             // 📱 Mobile → close sidebar, open chatbox
             setChatBoxOpen(true);

@@ -81,9 +81,9 @@ export default function AddGroup({ open, onClose, allUsers, onCreate }) {
                     value={groupName}
                     onChange={(e) => setGroupName(e.target.value)}
                     sx={{
-                        mt:1,
+                        mt: 1,
                         height: 50,
-                        mb:1,
+                        mb: 1,
                         backgroundColor: "rgba(255,255,255,0.05)",
                         borderRadius: 5,
                         "& .MuiInputBase-input": { color: "whitesmoke", },
@@ -114,7 +114,16 @@ export default function AddGroup({ open, onClose, allUsers, onCreate }) {
                 />
 
                 {/* Selected Users */}
-                <div style={{ marginBottom: 12 }}>
+                <List sx={{
+                    maxHeight: 80, ml: 3,
+                    mt: 1,
+                    borderTop: "0.5px solid rgba(255, 255, 255, 0.28)",
+                    borderBottom: "0.5px solid rgba(255, 255, 255, 0.28)",
+                    overflowY: "auto",
+                    "&::-webkit-scrollbar": { display: "none" },
+                    mb: 1,
+                    p:1
+                }}>
                     {selectedUsers.map((user) => (
                         <Chip
                             key={user._id}
@@ -132,7 +141,7 @@ export default function AddGroup({ open, onClose, allUsers, onCreate }) {
                             }}
                         />
                     ))}
-                </div>
+                </List>
 
                 {/* User List */}
                 <List
@@ -154,10 +163,10 @@ export default function AddGroup({ open, onClose, allUsers, onCreate }) {
                                 borderRadius: 12,
                                 height: 50,
                                 mb: 1,
-                                 "&:hover": {
-                                  backgroundColor: "rgba(255,255,255,0.05)",
-                                  cursor: "pointer",
-                              },
+                                "&:hover": {
+                                    backgroundColor: "rgba(255,255,255,0.05)",
+                                    cursor: "pointer",
+                                },
                                 backgroundColor: selectedUsers.find((u) => u._id === user._id)
                                     ? "rgba(255,255,255,0.15)"
                                     : "transparent",
@@ -177,7 +186,7 @@ export default function AddGroup({ open, onClose, allUsers, onCreate }) {
                 </List>
             </DialogContent>
 
-            <DialogActions sx={{alignItems: "center"}}>
+            <DialogActions sx={{ alignItems: "center" }}>
                 <Button
                     variant="contained"
                     onClick={handleCreate}

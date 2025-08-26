@@ -5,11 +5,27 @@ import { Box, Typography, TextField, IconButton, InputAdornment } from "@mui/mat
 import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
 import SendIcon from "@mui/icons-material/Send";
 import GreetingSequence from "./ui/GreetingSequence";
+import VisibleIcon from "./visibleIcon";
+import ChatDialog from "./ChatDialog";
+import { AppContext } from "../context/exportAppContext";
 
 function ChatBox() {
     const { selectedChat, backendURL } = useContext(ChatContext);
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState("");
+    const { user } = useContext(AppContext);
+
+    const [openProfile, setOpenProfile] = useState(false);
+    const [profileUser, setProfileUser] = useState(null); // For single user
+    const isGroup = selectedChat?.isGroupChat;
+
+    const getProfileUser = () => {
+        if (!selectedChat) return null;
+        if (isGroup) return null; // group will show all users
+        // Single chat: find the other user
+        return selectedChat.users.find(u => u._id !== user._id);
+    };
+
 
     // Fetch messages whenever chat changes
     useEffect(() => {
@@ -17,7 +33,7 @@ function ChatBox() {
         const fetchMessages = async () => {
             try {
                 console.log(selectedChat);
-                
+
                 const response = await axios.get(`${backendURL}/api/message/${selectedChat._id}`, { withCredentials: true });
                 if (response.data.success) {
                     setMessages(response.data.messages);
@@ -48,7 +64,7 @@ function ChatBox() {
     if (!selectedChat) {
 
         return (
-          <GreetingSequence/>
+            <GreetingSequence />
         );
     }
 
@@ -74,6 +90,12 @@ function ChatBox() {
                     </Box>
                 ))}
             </Box>
+
+            {/* visible icon */}
+            <VisibleIcon  setProfileUser={setProfileUser} setOpenProfile={setOpenProfile} getProfileUser={getProfileUser}  />
+
+            {/* chatProfile  */}
+            <ChatDialog selectedChat={selectedChat} openProfile={openProfile} setOpenProfile={setOpenProfile} isGroup={isGroup} profileUser={profileUser} />
 
             {/* Input box */}
             <Box sx={{ borderTop: "0.5px solid rgba(255, 255, 255, 0.12)", p: 1 }}>
