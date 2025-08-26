@@ -9,7 +9,9 @@ import {
     List,
     Divider,
     Button,
-    TextField
+    TextField,
+    Skeleton,
+    ListItem
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import ClearIcon from "@mui/icons-material/Clear";
@@ -32,6 +34,8 @@ export default function ChatDialog({
     const [searchResults, setSearchResults] = useState([]);
     const { user, backendURL } = useContext(AppContext);
     const { onFetchAllUserChats, setSelectedChat } = useContext(ChatContext); // ✅ add setter
+    const [loadingSearch, setLoadingSearch] = useState(false);
+    const [search, setSearch] = useState("")
 
 
     const handleToggleUser = (userId) => {
@@ -41,23 +45,30 @@ export default function ChatDialog({
     };
 
     // ✅ Handle search for users
-    const handleSearchUser = async (e) => {
-        const query = e.target.value.trim();
-        if (!query) {
+    const handleSearchUser = async () => {
+        if (search.length === 0) {
+            setSearch("");
             setSearchResults([]);
-            return;
+            return notifyError("Please Provide Name or Email !");
         }
+
+        setLoadingSearch(true); // ✅ start loader
         try {
-            const resp = await axios.get(backendURL + `/api/user/alluser?search=${query}`,
+            const resp = await axios.get(
+                backendURL + `/api/user/alluser?search=${search}`,
                 { withCredentials: true }
             );
             if (resp.data.success) {
                 setSearchResults(resp.data.data);
+                setSearch("")
             }
         } catch (error) {
             console.log(error);
+        } finally {
+            setLoadingSearch(false); // ✅ stop loader
         }
     };
+
 
     // ✅ Add user to array
     const handleAddUser = (user) => {
@@ -165,20 +176,62 @@ export default function ChatDialog({
                         </Typography>
 
                         {/* ✅ Search User to Add */}
-                        <TextField
-                            fullWidth
-                            size="small"
-                            placeholder="Search user to add..."
-                            onChange={handleSearchUser}
-                            sx={{
-                                mb: 2,
-                                input: { color: "whitesmoke" },
-                                "& .MuiOutlinedInput-root": {
-                                    "& fieldset": { borderColor: "rgba(255,255,255,0.3)" },
-                                    "&:hover fieldset": { borderColor: "white" },
-                                },
-                            }}
-                        />
+                        <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
+                            <TextField
+                                fullWidth
+                                placeholder="Search user to add..."
+                                variant="outlined"
+                                type="text"
+                                name="search"
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                sx={{
+                                    backgroundColor: "rgba(255,255,255,0.05)",
+                                    borderRadius: 5,
+                                    "& .MuiInputBase-input": {
+                                        color: "whitesmoke",
+                                    },
+                                    "& .MuiInputLabel-root": {
+                                        color: "whitesmoke",
+                                    },
+                                    "& .MuiOutlinedInput-root": {
+                                        "& fieldset": { border: "none" },
+                                        "&:hover fieldset": { border: "none" },
+                                        "&.Mui-focused fieldset": { border: "none" },
+                                    },
+                                    // ✅ Fix autofill styles
+                                    "& input:-webkit-autofill": {
+                                        WebkitBoxShadow: "0 0 0 100px rgba(255,255,255,0.05) inset",
+                                        borderRadius: 5,
+                                        WebkitTextFillColor: "whitesmoke",
+                                        caretColor: "whitesmoke",
+                                        transition: "background-color 9999s ease-in-out 0s",
+                                    },
+                                    "& input:-webkit-autofill:focus": {
+                                        WebkitBoxShadow: "0 0 0 100px rgba(255,255,255,0.05) inset",
+                                        WebkitTextFillColor: "whitesmoke",
+                                        caretColor: "whitesmoke",
+                                    },
+                                }}
+                            />
+
+                            <Button
+                                variant="contained"
+                                sx={{
+                                    height: 50,
+                                    fontSize: 13,
+                                    borderRadius: 5,
+                                    backgroundColor: "rgba(255,255,255,0.15)",
+                                    color: "whitesmoke",
+                                    "&:hover": { backgroundColor: "rgba(255,255,255,0.25)" },
+                                }}
+                                onClick={handleSearchUser}
+                            >
+                                Go
+                            </Button>
+                        </Box>
+
+
 
                         {/* ✅ Show Added Users */}
                         {addedUsers.length > 0 && (
@@ -226,7 +279,40 @@ export default function ChatDialog({
                         )}
 
                         {/* ✅ Search Results */}
-                        {searchResults.length > 0 && (
+                        {/* ✅ Search Results */}
+                        {loadingSearch ? (
+                            <List>
+                                {[1, 2].map((i) => (
+                                    <ListItem
+                                        key={i}
+                                        sx={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: 1,
+                                            borderBottom: "0.5px solid rgba(255, 255, 255, 0.28)",
+                                            borderRadius: 12,
+                                            marginTop: 1,
+                                            py: 1,
+                                        }}
+                                    >
+                                        {/* Avatar skeleton */}
+                                        <Skeleton
+                                            variant="circular"
+                                            width={35}
+                                            height={35}
+                                            sx={{ bgcolor: "rgba(255,255,255,0.2)" }}
+                                        />
+                                        {/* Text skeleton */}
+                                        <Skeleton
+                                            variant="text"
+                                            width="60%"
+                                            height={20}
+                                            sx={{ bgcolor: "rgba(255,255,255,0.2)" }}
+                                        />
+                                    </ListItem>
+                                ))}
+                            </List>
+                        ) : searchResults.length > 0 && (
                             <Box mb={2}>
                                 <Typography variant="subtitle2">Search Results:</Typography>
                                 <List
@@ -267,6 +353,7 @@ export default function ChatDialog({
                                 </List>
                             </Box>
                         )}
+
 
                         <Divider sx={{ my: 1, bgcolor: "rgba(255,255,255,0.3)" }} />
 
