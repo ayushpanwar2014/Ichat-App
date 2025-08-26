@@ -8,7 +8,8 @@ import {
     Box,
     List,
     Divider,
-    Button
+    Button,
+    TextField
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import ClearIcon from "@mui/icons-material/Clear";
@@ -27,8 +28,11 @@ export default function ChatDialog({
     profileUser,
 }) {
     const [removedUsers, setRemovedUsers] = useState([]);
+    const [addedUsers, setAddedUsers] = useState([]); // ✅ store new users to add
+    const [searchResults, setSearchResults] = useState([]);
     const { user, backendURL } = useContext(AppContext);
-    const { onFetchAllUserChats } = useContext(ChatContext);
+    const { onFetchAllUserChats, setSelectedChat } = useContext(ChatContext); // ✅ add setter
+
 
     const handleToggleUser = (userId) => {
         setRemovedUsers((prev) =>
@@ -36,28 +40,95 @@ export default function ChatDialog({
         );
     };
 
-    const handleRemoveSelected = async () => {
-        if (removedUsers.length === 0) return;
-        console.log("Chat Id",selectedChat._id);
-        
-        console.log('Remove user',removedUsers);
-
-        const chatId = selectedChat._id
-        const removeUsers = removedUsers;
+    // ✅ Handle search for users
+    const handleSearchUser = async (e) => {
+        const query = e.target.value.trim();
+        if (!query) {
+            setSearchResults([]);
+            return;
+        }
         try {
-
-            const resp = await axios.put(backendURL+'/api/chat/removefromgroup', { chatId, removeUsers }, {withCredentials: true});
-
-            if(resp.data.success){
-                notifySuccess(resp.data.msg);
-                setRemovedUsers([]); // clear after removal
-                await onFetchAllUserChats()
+            const resp = await axios.get(backendURL + `/api/user/alluser?search=${query}`,
+                { withCredentials: true }
+            );
+            if (resp.data.success) {
+                setSearchResults(resp.data.data);
             }
         } catch (error) {
             console.log(error);
-            notifyError(error.response.data.msg)
         }
-     
+    };
+
+    // ✅ Add user to array
+    const handleAddUser = (user) => {
+        if (!addedUsers.some((u) => u._id === user._id)) {
+            setAddedUsers((prev) => [...prev, user]);
+        }
+    };
+
+    // ✅ Remove from addedUsers
+    const handleRemoveAddedUser = (userId) => {
+        setAddedUsers((prev) => prev.filter((u) => u._id !== userId));
+    };
+
+    const onClickAddUser = async () => {
+        const newUsers = addedUsers.map((u) => u._id);
+        const chatId = selectedChat._id;
+
+        try {
+
+            const resp = await axios.put(backendURL + '/api/chat/addtogroup', { chatId, newUsers }, { withCredentials: true });
+
+            if (resp.data.success) {
+                notifySuccess(resp.data.msg);
+
+                // ✅ Update selectedChat locally
+                const updatedChat = {
+                    ...selectedChat,
+                    users: [...selectedChat.users, ...addedUsers],
+                };
+                setSelectedChat(updatedChat);
+
+                setAddedUsers([]); // clear selection
+                await onFetchAllUserChats();
+            }
+
+        } catch (error) {
+            notifyError(error.response.data.msg);
+        }
+
+    }
+
+    const handleRemoveSelected = async () => {
+        if (removedUsers.length === 0) return;
+
+        const chatId = selectedChat._id;
+        const removeUsers = removedUsers;
+        try {
+            const resp = await axios.put(
+                backendURL + "/api/chat/removefromgroup",
+                { chatId, removeUsers },
+                { withCredentials: true }
+            );
+
+            if (resp.data.success) {
+                notifySuccess(resp.data.msg);
+
+                // ✅ Update selectedChat locally
+                const updatedChat = {
+                    ...selectedChat,
+                    users: selectedChat.users.filter((u) => !removedUsers.includes(u._id)),
+                };
+                setSelectedChat(updatedChat);
+
+                setRemovedUsers([]); // clear selection
+                await onFetchAllUserChats();
+            }
+
+        } catch (error) {
+            console.log(error);
+            notifyError(error.response?.data?.msg || "Error removing users");
+        }
     };
 
     return (
@@ -72,7 +143,7 @@ export default function ChatDialog({
                     backdropFilter: "blur(10px) saturate(180%)",
                     WebkitBackdropFilter: "blur(10px) saturate(180%)",
                     color: "whitesmoke",
-                    minWidth: 320,
+                    minWidth: 340,
                 },
             }}
         >
@@ -88,74 +159,130 @@ export default function ChatDialog({
             <DialogContent sx={{ textAlign: "center" }}>
                 {isGroup ? (
                     <Box>
+                        {/* Group Admin */}
                         <Typography variant="h6" mb={1}>
                             Group Admin: {selectedChat.groupAdmin.name}
                         </Typography>
 
-                        {/* Removed Users Section */}
-                        {removedUsers.length > 0 && (
+                        {/* ✅ Search User to Add */}
+                        <TextField
+                            fullWidth
+                            size="small"
+                            placeholder="Search user to add..."
+                            onChange={handleSearchUser}
+                            sx={{
+                                mb: 2,
+                                input: { color: "whitesmoke" },
+                                "& .MuiOutlinedInput-root": {
+                                    "& fieldset": { borderColor: "rgba(255,255,255,0.3)" },
+                                    "&:hover fieldset": { borderColor: "white" },
+                                },
+                            }}
+                        />
+
+                        {/* ✅ Show Added Users */}
+                        {addedUsers.length > 0 && (
                             <Box mb={2}>
                                 <Typography variant="subtitle1" fontWeight={600}>
-                                    Selected for Removal:
+                                    Selected to Add:
                                 </Typography>
                                 <List
                                     sx={{
-                                        maxHeight: 100,
+                                        maxHeight: 80,
                                         overflowY: "auto",
                                         "&::-webkit-scrollbar": { display: "none" },
                                     }}
                                 >
-                                    {selectedChat.users
-                                        .filter((u) => removedUsers.includes(u._id))
-                                        .map((u) => (
-                                            <Box
-                                                key={u._id}
-                                                sx={{
-                                                    display: "flex",
-                                                    alignItems: "center",
-                                                    justifyContent: "space-between",
-                                                    gap: 1,
-                                                    borderBottom: "0.5px solid rgba(255, 255, 255, 0.28)",
-                                                    borderRadius: 10,
-                                                    height: 45,
-                                                    mb: 1,
-                                                    px: 1,
-                                                    "&:hover": {
-                                                        backgroundColor: "rgba(255,255,255,0.05)",
-                                                    },
-                                                }}
-                                            >
-                                                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                                    <Avatar src={u.image} sx={{ width: 28, height: 28 }} />
-                                                    <Typography>{u.name}</Typography>
-                                                </Box>
-                                                <IconButton
-                                                    size="small"
-                                                    sx={{ color: "lightgreen" }}
-                                                    onClick={() => handleToggleUser(u._id)}
-                                                >
-                                                    <AddIcon fontSize="small" />
-                                                </IconButton>
+                                    {addedUsers.map((u) => (
+                                        <Box
+                                            key={u._id}
+                                            sx={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "space-between",
+                                                gap: 1,
+                                                borderBottom: "0.5px solid rgba(255, 255, 255, 0.28)",
+                                                borderRadius: 10,
+                                                height: 45,
+                                                mb: 1,
+                                                px: 1,
+                                            }}
+                                        >
+                                            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                                <Avatar src={u.image} sx={{ width: 28, height: 28 }} />
+                                                <Typography>{u.name}</Typography>
                                             </Box>
-                                        ))}
+                                            <IconButton
+                                                size="small"
+                                                sx={{ color: "red" }}
+                                                onClick={() => handleRemoveAddedUser(u._id)}
+                                            >
+                                                <ClearIcon fontSize="small" />
+                                            </IconButton>
+                                        </Box>
+                                    ))}
                                 </List>
-                                <Divider sx={{ my: 1, bgcolor: "rgba(255,255,255,0.3)" }} />
                             </Box>
                         )}
 
-                        {/* All Users Section */}
+                        {/* ✅ Search Results */}
+                        {searchResults.length > 0 && (
+                            <Box mb={2}>
+                                <Typography variant="subtitle2">Search Results:</Typography>
+                                <List
+                                    sx={{
+                                        maxHeight: 120,
+                                        overflowY: "auto",
+                                        "&::-webkit-scrollbar": { display: "none" },
+                                    }}
+                                >
+                                    {searchResults.map((u) => (
+                                        <Box
+                                            key={u._id}
+                                            sx={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "space-between",
+                                                gap: 1,
+                                                borderBottom: "0.5px solid rgba(255, 255, 255, 0.28)",
+                                                borderRadius: 10,
+                                                height: 45,
+                                                mb: 1,
+                                                px: 1,
+                                            }}
+                                        >
+                                            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                                <Avatar src={u.image} sx={{ width: 28, height: 28 }} />
+                                                <Typography>{u.name}</Typography>
+                                            </Box>
+                                            <IconButton
+                                                size="small"
+                                                sx={{ color: "lightgreen" }}
+                                                onClick={() => handleAddUser(u)}
+                                            >
+                                                <AddIcon fontSize="small" />
+                                            </IconButton>
+                                        </Box>
+                                    ))}
+                                </List>
+                            </Box>
+                        )}
+
+                        <Divider sx={{ my: 1, bgcolor: "rgba(255,255,255,0.3)" }} />
+
+                        {/* Existing group members */}
                         <Typography mb={1} fontWeight={600}>
                             Group Members:
                         </Typography>
                         <List
                             sx={{
-                                maxHeight: 280,
+                                maxHeight: 250,
                                 overflowY: "auto",
                                 "&::-webkit-scrollbar": { display: "none" },
                             }}
                         >
                             {selectedChat.users
-                                .filter((u) => u._id !== user._id) // ✅ exclude yourself
+                                .filter((u) => u._id !== user._id)
                                 .map((u) => {
                                     const isRemoved = removedUsers.includes(u._id);
                                     return (
@@ -172,9 +299,6 @@ export default function ChatDialog({
                                                 mb: 1,
                                                 px: 1,
                                                 opacity: isRemoved ? 0.5 : 1,
-                                                "&:hover": {
-                                                    backgroundColor: "rgba(255,255,255,0.05)",
-                                                },
                                             }}
                                         >
                                             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -186,11 +310,7 @@ export default function ChatDialog({
                                                 sx={{ color: isRemoved ? "lightgreen" : "white" }}
                                                 onClick={() => handleToggleUser(u._id)}
                                             >
-                                                {isRemoved ? (
-                                                    <AddIcon fontSize="small" />
-                                                ) : (
-                                                    <ClearIcon fontSize="small" />
-                                                )}
+                                                {isRemoved ? <AddIcon fontSize="small" /> : <ClearIcon fontSize="small" />}
                                             </IconButton>
                                         </Box>
                                     );
@@ -211,6 +331,7 @@ export default function ChatDialog({
                                         px: 2,
                                         py: 0.5,
                                         fontWeight: 600,
+                                        mr: 1
                                     }}
                                 >
                                     Remove {removedUsers.length} User
@@ -218,6 +339,29 @@ export default function ChatDialog({
                                 </Button>
                             </Box>
                         )}
+
+                        {/* ✅ Add Users Button */}
+                        {addedUsers.length > 0 && (
+                            <Box mt={2}>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    size="small"
+                                    onClick={onClickAddUser}
+                                    sx={{
+                                        textTransform: "none",
+                                        borderRadius: 2,
+                                        px: 2,
+                                        py: 0.5,
+                                        fontWeight: 600,
+                                    }}
+                                >
+                                    Add {addedUsers.length} User
+                                    {addedUsers.length > 1 ? "s" : ""}
+                                </Button>
+                            </Box>
+                        )}
+
                     </Box>
                 ) : (
                     <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
