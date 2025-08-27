@@ -77,9 +77,18 @@
  }
 
  .scrollable-chat {
-   overflow-y: auto;
-   scroll-behavior: smooth;
-   /* Smooth scrolling */
-   -webkit-overflow-scrolling: touch;
-   /* iOS momentum scroll */
+    overflow-y: auto;
+      scroll-behavior: smooth;
+      /* smooth scroll */
+      -webkit-overflow-scrolling: touch;
+      /* iOS momentum scroll */
+    
+      /* Hide scrollbar but keep scroll */
+      scrollbar-width: none;
+      /* Firefox */
+ }
+
+ .scrollable-chat::-webkit-scrollbar {
+   display: none;
+   /* Chrome, Safari, Edge */
  }

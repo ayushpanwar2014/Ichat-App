@@ -36,6 +36,32 @@ export default function ChatDialog({
     const { onFetchAllUserChats, setSelectedChat } = useContext(ChatContext); // ✅ add setter
     const [loadingSearch, setLoadingSearch] = useState(false);
     const [search, setSearch] = useState("")
+    const [newGroupName, setNewGroupName] = useState(selectedChat?.chatName || "");
+    const [renaming, setRenaming] = useState(false);
+
+    const handleRenameGroup = async () => {
+        if (!newGroupName.trim()) return notifyError("Please enter a group name");
+
+        setRenaming(true);
+        try {
+            const resp = await axios.put(
+                `${backendURL}/api/chat/renamechatgroup`,
+                { chatId: selectedChat._id, newChatName: newGroupName },
+                { withCredentials: true }
+            );
+
+            if (resp.data.success) {
+                notifySuccess(resp.data.msg);
+                // Update the selected chat locally
+                setSelectedChat(resp.data.data);
+                onFetchAllUserChats();
+            }
+        } catch (error) {
+            notifyError(error.response?.data?.msg || "Error renaming group");
+        } finally {
+            setRenaming(false);
+        }
+    };
 
 
     const handleToggleUser = (userId) => {
@@ -145,7 +171,7 @@ export default function ChatDialog({
     return (
         <Dialog
             open={openProfile}
-            onClose={() => { setOpenProfile(false); setSearchResults([]);}}
+            onClose={() => { setOpenProfile(false); setSearchResults([]); }}
             PaperProps={{
                 sx: {
                     backgroundColor: "rgba(101, 38, 38, 0.35)",
@@ -174,6 +200,45 @@ export default function ChatDialog({
                         <Typography variant="h6" mb={1}>
                             Group Admin: {selectedChat.groupAdmin.name}
                         </Typography>
+
+                        <Box sx={{ display: "flex", gap: 1, mb: 2, mt: 1 }}>
+                            <TextField
+                                fullWidth
+                                placeholder="New group name"
+                                variant="outlined"
+                                value={newGroupName}
+                                onChange={(e) => setNewGroupName(e.target.value)}
+                                sx={{
+                                    backgroundColor: "rgba(255,255,255,0.05)",
+                                    borderRadius: 5,
+                                    "& .MuiInputBase-input": { color: "whitesmoke" },
+                                    "& .MuiOutlinedInput-root": {
+                                        "& fieldset": { border: "none" },
+                                        "&:hover fieldset": { border: "none" },
+                                        "&.Mui-focused fieldset": { border: "none" },
+                                    },
+                                }}
+                            />
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                size="small"
+                                onClick={handleRenameGroup}
+                                disabled={renaming}
+                                sx={{
+                                    height: 50,
+                                    px:4,
+                                    fontSize: 11,
+                                    borderRadius: 5,
+                                    backgroundColor: "rgba(255,255,255,0.15)",
+                                    color: "whitesmoke",
+                                    "&:hover": { backgroundColor: "rgba(255,255,255,0.25)" },
+                                }}
+                            >
+                                {renaming ? "Renaming..." : "Rename"}
+                            </Button>
+                        </Box>
+
 
                         {/* ✅ Search User to Add */}
                         <Box sx={{ display: "flex", gap: 1, mb: 2 }}>

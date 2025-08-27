@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { ChatContext } from "../context/exportChatContext";
 import axios from "axios";
-import { Box, Typography, TextField, IconButton, InputAdornment } from "@mui/material";
+import { Box, Typography, TextField, IconButton, InputAdornment, Skeleton } from "@mui/material";
 import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
 import SendIcon from "@mui/icons-material/Send";
 import GreetingSequence from "./ui/GreetingSequence";
@@ -15,6 +15,8 @@ function ChatBox() {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState("");
     const { user } = useContext(AppContext);
+    const [loadingMessages, setLoadingMessages] = useState(false);
+
 
     const [openProfile, setOpenProfile] = useState(false);
     const [profileUser, setProfileUser] = useState(null); // For single user
@@ -31,22 +33,27 @@ function ChatBox() {
     // Fetch messages whenever chat changes
     useEffect(() => {
         if (!selectedChat) return;
-        const fetchMessages = async () => {
-            try {
 
-                const response = await axios.get(`${backendURL}/api/message/fetch/${selectedChat._id}`, { withCredentials: true });
+        const fetchMessages = async () => {
+            setLoadingMessages(true); // start loading
+            try {
+                const response = await axios.get(
+                    `${backendURL}/api/message/fetch/${selectedChat._id}`,
+                    { withCredentials: true }
+                );
                 if (response.data.success) {
-                    console.log(response.data.success);
-                    
                     setMessages(response.data.messages);
                 }
             } catch (error) {
                 console.error("Error fetching messages:", error);
+            } finally {
+                setLoadingMessages(false); // stop loading
             }
         };
 
         fetchMessages();
     }, [selectedChat, backendURL]);
+
 
     const handleSend = async () => {
         if (!input.trim() || !selectedChat) return;
@@ -77,66 +84,97 @@ function ChatBox() {
         <Box sx={{ flex: 1, display: "flex", flexDirection: "column", backgroundColor: "rgba(47, 47, 47, 0.05)", border: "0.5px solid rgba(255, 255, 255, 0.12)", borderRadius: "12px", mt: 5, overflow: "hidden", borderLeft: "none", borderRight: "none"  }}>
             {/* Chat messages */}
             <Box sx={{ flex: 1, overflowY: "auto", p: 2, display: "flex", flexDirection: "column", gap: 1.5, height: "60vh" }}>
-                <ScrollableFeed forceScroll={true} className="scrollable-chat" >
-                {messages.map((msg) => {
-                    const isMe = msg.sender._id === user._id;
-                    return (
-                        <Box
-                            key={msg._id}
-                            sx={{
-                                display: "flex",
-                                alignItems: "flex-end",
-                                justifyContent: isMe ? "flex-end" : "flex-start",
-                                gap: 1,
-                            }}
-                        >
-                            {/* Avatar on LEFT if not me */}
-                            {!isMe && (
+                <ScrollableFeed forceScroll={true} className="scrollable-chat">
+                    {loadingMessages ? (
+                        // Show skeletons (mix left + right)
+                        Array.from({ length: 10 }).map((_, i) => {
+                            const isMe = i % 2 === 0; // alternate left/right for demo
+                            return (
                                 <Box
-                                    component="img"
-                                    src={msg.sender.image}
-                                    alt={msg.sender.name}
-                                    sx={{ width: 35, height: 35, borderRadius: "50%", mb:1 }}
-                                />
-                            )}
+                                    key={i}
+                                    sx={{
+                                        display: "flex",
+                                        alignItems: "flex-end",
+                                        justifyContent: isMe ? "flex-end" : "flex-start",
+                                        gap: 1,
+                                        mb: 1,
+                                    }}
+                                >
+                                    {/* LEFT avatar for incoming */}
+                                    {!isMe && <Skeleton variant="circular" width={35} height={35} sx={{ bgcolor: "rgba(255,255,255,0.2)" }} />}
 
-                            {/* Message bubble */}
-                            <Box
-                                sx={{
-                                    bgcolor: isMe ? "primary.main" : "grey.800",
-                                    color: "white",
-                                    px: 2,
-                                    py: 0.5,
-                                    borderRadius: 2,
-                                    maxWidth: "65%",
-                                    boxShadow: 1,
-                                    mb: 1
-                                }}
-                            >
-                                {/* Show sender name only in group chats */}
-                                {isGroup && !isMe && (
-                                    <Typography
-                                        variant="caption"
-                                        sx={{ fontWeight: "bold", display: "block", color: "#ccc" }}
+                                    {/* Message bubble */}
+                                    <Skeleton
+                                        variant="rectangular"
+                                        width="30%"
+                                        height={20}
+                                        sx={{
+                                            borderRadius: 2,
+                                            bgcolor: "rgba(255,255,255,0.2)",
+                                            ml: !isMe ? 0 : "auto",
+                                        }}
+                                    />
+
+                                    {/* RIGHT avatar for outgoing */}
+                                    {isMe && <Skeleton variant="circular" width={35} height={35} sx={{ bgcolor: "rgba(255,255,255,0.2)" }} />}
+                                </Box>
+                            );
+                        })
+                    ) : (
+                        messages.map((msg) => {
+                            const isMe = msg.sender._id === user._id;
+                            return (
+                                <Box
+                                    key={msg._id}
+                                    sx={{
+                                        display: "flex",
+                                        alignItems: "flex-end",
+                                        justifyContent: isMe ? "flex-end" : "flex-start",
+                                        gap: 1,
+                                    }}
+                                >
+                                    {!isMe && (
+                                        <Box
+                                            component="img"
+                                            src={msg.sender.image}
+                                            alt={msg.sender.name}
+                                            sx={{ width: 35, height: 35, borderRadius: "50%", mb: 1 }}
+                                        />
+                                    )}
+
+                                    <Box
+                                        sx={{
+                                            bgcolor: isMe ? "primary.main" : "grey.800",
+                                            color: "white",
+                                            px: 2,
+                                            py: 0.5,
+                                            borderRadius: 2,
+                                            maxWidth: "65%",
+                                            boxShadow: 1,
+                                            mb: 1
+                                        }}
                                     >
-                                        {msg.sender.name}
-                                    </Typography>
-                                )}
-                                <Typography variant="body2">{msg.content}</Typography>
-                            </Box>
+                                        {isGroup && !isMe && (
+                                            <Typography variant="caption" sx={{ fontWeight: "bold", display: "block", color: "#ccc" }}>
+                                                {msg.sender.name}
+                                            </Typography>
+                                        )}
+                                        <Typography variant="body2">{msg.content}</Typography>
+                                    </Box>
 
-                            {/* Avatar on RIGHT if me */}
-                            {isMe && (
-                                <Box
-                                    component="img"
-                                    src={msg.sender.image}
-                                    alt={msg.sender.name}
-                                    sx={{ width: 35, height: 35, borderRadius: "50%", mb:1 }}
-                                />
-                            )}
-                        </Box>
-                    );
-                })}
+                                    {isMe && (
+                                        <Box
+                                            component="img"
+                                            src={msg.sender.image}
+                                            alt={msg.sender.name}
+                                            sx={{ width: 35, height: 35, borderRadius: "50%", mb: 1 }}
+                                        />
+                                    )}
+                                </Box>
+                            );
+                        })
+                    )}
+
                 </ScrollableFeed>
             </Box>
 
