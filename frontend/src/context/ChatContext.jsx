@@ -80,6 +80,11 @@ const ChatContextProvider = (props) => {
         if (user?.name){
             onFetchAllUserChats();
         }
+        else{
+            setSearch("");
+            setSearchUsers([]);
+            setAllUsersChats([]);
+        }
     }, [user,onFetchAllUserChats])
 
     const value = {

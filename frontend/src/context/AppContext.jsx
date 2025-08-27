@@ -5,7 +5,6 @@ import { AppContext } from "./exportAppContext";
 import { useProgress } from "./ProgressContext";
 import { notifyError, notifySuccess } from "../components/notification/toast";
 
-
 const AppContextProvider = (props) => {
 
     const { startProgress, completeProgress } = useProgress();
@@ -35,7 +34,7 @@ const AppContextProvider = (props) => {
 
             if (resp.data.success) {
                 localStorage.removeItem('userData');
-                setUser("");
+                setUser(null);
                 notifySuccess("Logout successful!");
                 completeProgress();
             }
@@ -65,7 +64,6 @@ const AppContextProvider = (props) => {
             localStorage.removeItem('userData');
             setUser(null);  
             completeProgress();
-            console.log(error);
             
         }
     }, [backendURL, completeProgress, startProgress]);

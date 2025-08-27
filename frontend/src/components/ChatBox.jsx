@@ -8,6 +8,7 @@ import GreetingSequence from "./ui/GreetingSequence";
 import VisibleIcon from "./visibleIcon";
 import ChatDialog from "./ChatDialog";
 import { AppContext } from "../context/exportAppContext";
+import ScrollableFeed from "react-scrollable-feed";
 
 function ChatBox() {
     const { selectedChat, backendURL } = useContext(ChatContext);
@@ -32,28 +33,32 @@ function ChatBox() {
         if (!selectedChat) return;
         const fetchMessages = async () => {
             try {
-                console.log(selectedChat);
 
-                const response = await axios.get(`${backendURL}/api/message/${selectedChat._id}`, { withCredentials: true });
+                const response = await axios.get(`${backendURL}/api/message/fetch/${selectedChat._id}`, { withCredentials: true });
                 if (response.data.success) {
+                    console.log(response.data.success);
+                    
                     setMessages(response.data.messages);
                 }
             } catch (error) {
                 console.error("Error fetching messages:", error);
             }
         };
+
         fetchMessages();
     }, [selectedChat, backendURL]);
 
     const handleSend = async () => {
         if (!input.trim() || !selectedChat) return;
         try {
-            const response = await axios.post(`${backendURL}/api/message`,
+            const response = await axios.post(`${backendURL}/api/message/send`,
                 { chatId: selectedChat._id, content: input },
                 { withCredentials: true }
             );
+            console.log(response.data.newMessage);
+            
             if (response.data.success) {
-                setMessages([...messages, response.data.message]); // append new message
+                setMessages([...messages, response.data.newMessage]); // append new message
                 setInput("");
             }
         } catch (error) {
@@ -69,27 +74,73 @@ function ChatBox() {
     }
 
     return (
-        <Box sx={{ flex: 1, display: "flex", flexDirection: "column", backgroundColor: "rgba(47, 47, 47, 0.05)", border: "0.5px solid rgba(255, 255, 255, 0.12)", borderRadius: "12px", mt: 5, overflow: "hidden", borderLeft: "none", borderRight: "none" }}>
+        <Box sx={{ flex: 1, display: "flex", flexDirection: "column", backgroundColor: "rgba(47, 47, 47, 0.05)", border: "0.5px solid rgba(255, 255, 255, 0.12)", borderRadius: "12px", mt: 5, overflow: "hidden", borderLeft: "none", borderRight: "none"  }}>
             {/* Chat messages */}
-            <Box sx={{ flex: 1, overflowY: "auto", p: 2, display: "flex", flexDirection: "column", gap: 1.5 }}>
-                {messages.map((msg, idx) => (
-                    <Box
-                        key={idx}
-                        sx={{
-                            alignSelf: msg.sender._id === selectedChat._id ? "flex-start" : "flex-end",
-                            bgcolor: msg.sender._id === selectedChat._id ? "grey.800" : "primary.main",
-                            color: "white",
-                            px: 2,
-                            py: 1,
-                            borderRadius: 2,
-                            maxWidth: "70%",
-                            boxShadow: 1,
-                        }}
-                    >
-                        <Typography variant="body2">{msg.content}</Typography>
-                    </Box>
-                ))}
+            <Box sx={{ flex: 1, overflowY: "auto", p: 2, display: "flex", flexDirection: "column", gap: 1.5, height: "60vh" }}>
+                <ScrollableFeed forceScroll={true} className="scrollable-chat" >
+                {messages.map((msg) => {
+                    const isMe = msg.sender._id === user._id;
+                    return (
+                        <Box
+                            key={msg._id}
+                            sx={{
+                                display: "flex",
+                                alignItems: "flex-end",
+                                justifyContent: isMe ? "flex-end" : "flex-start",
+                                gap: 1,
+                            }}
+                        >
+                            {/* Avatar on LEFT if not me */}
+                            {!isMe && (
+                                <Box
+                                    component="img"
+                                    src={msg.sender.image}
+                                    alt={msg.sender.name}
+                                    sx={{ width: 35, height: 35, borderRadius: "50%", mb:1 }}
+                                />
+                            )}
+
+                            {/* Message bubble */}
+                            <Box
+                                sx={{
+                                    bgcolor: isMe ? "primary.main" : "grey.800",
+                                    color: "white",
+                                    px: 2,
+                                    py: 0.5,
+                                    borderRadius: 2,
+                                    maxWidth: "65%",
+                                    boxShadow: 1,
+                                    mb: 1
+                                }}
+                            >
+                                {/* Show sender name only in group chats */}
+                                {isGroup && !isMe && (
+                                    <Typography
+                                        variant="caption"
+                                        sx={{ fontWeight: "bold", display: "block", color: "#ccc" }}
+                                    >
+                                        {msg.sender.name}
+                                    </Typography>
+                                )}
+                                <Typography variant="body2">{msg.content}</Typography>
+                            </Box>
+
+                            {/* Avatar on RIGHT if me */}
+                            {isMe && (
+                                <Box
+                                    component="img"
+                                    src={msg.sender.image}
+                                    alt={msg.sender.name}
+                                    sx={{ width: 35, height: 35, borderRadius: "50%", mb:1 }}
+                                />
+                            )}
+                        </Box>
+                    );
+                })}
+                </ScrollableFeed>
             </Box>
+
+
 
             {/* visible icon */}
             <VisibleIcon  setProfileUser={setProfileUser} setOpenProfile={setOpenProfile} getProfileUser={getProfileUser}  />

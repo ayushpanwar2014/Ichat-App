@@ -76,11 +76,10 @@
    animation: pulseGlow 1.8s infinite ease-in-out;
  }
 
-
-
-
-
-
-
-
- 
+ .scrollable-chat {
+   overflow-y: auto;
+   scroll-behavior: smooth;
+   /* Smooth scrolling */
+   -webkit-overflow-scrolling: touch;
+   /* iOS momentum scroll */
+ }
