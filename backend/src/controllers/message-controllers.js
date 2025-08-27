@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { ChatModel } from "../models/chat-model.js";
 import { MessageModel } from "../models/message-model.js";
 
@@ -6,6 +7,10 @@ export const sendMessage = async (req, res, next) => {
 
     const { chatId, content } = req.body;
     const { userID } = req.user;
+    console.log(userID);
+    console.log(chatId,content);
+    
+    
 
     try {
 
@@ -40,6 +45,7 @@ export const sendMessage = async (req, res, next) => {
         return res.status(201).json({ status: true, msg: newMessage });
 
     } catch (error) {
+        console.log(error);
         next({ status: 500, message: "unauthorized access" });
     }
 }
@@ -48,6 +54,9 @@ export const sendMessage = async (req, res, next) => {
 export const allMessages = async (req, res, next) => {
     try {
         const { chatId } = req.params; // or req.query.chatId
+
+        console.log(chatId);
+        
 
         // 1. Validate
         if (!chatId) {
@@ -60,7 +69,7 @@ export const allMessages = async (req, res, next) => {
 
         // 2. Fetch messages
         const messages = await MessageModel.find({ chat: chatId })
-            .populate("sender", "name email avatar") // get sender details
+            .populate("sender", "name email image") // get sender details
             .populate("chat"); // get chat details
 
         // 3. Send response

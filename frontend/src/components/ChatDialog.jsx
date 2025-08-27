@@ -145,7 +145,7 @@ export default function ChatDialog({
     return (
         <Dialog
             open={openProfile}
-            onClose={() => setOpenProfile(false)}
+            onClose={() => { setOpenProfile(false); setSearchResults([]);}}
             PaperProps={{
                 sx: {
                     backgroundColor: "rgba(101, 38, 38, 0.35)",
@@ -278,7 +278,6 @@ export default function ChatDialog({
                             </Box>
                         )}
 
-                        {/* ✅ Search Results */}
                         {/* ✅ Search Results */}
                         {loadingSearch ? (
                             <List>
