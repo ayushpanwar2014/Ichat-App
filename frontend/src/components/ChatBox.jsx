@@ -143,6 +143,7 @@ function ChatBox() {
         );
     }
 
+    console.log("selected chat", selectedChat);
     return (
         <Box sx={{ flex: 1, display: "flex", flexDirection: "column", backgroundColor: "rgba(47, 47, 47, 0.05)", border: "0.5px solid rgba(255, 255, 255, 0.12)", borderRadius: "12px", mt: 5, overflow: "hidden", borderLeft: "none", borderRight: "none" }}>
             {/* Chat messages */}
@@ -263,7 +264,7 @@ function ChatBox() {
                                             bgcolor: "grey.700",
                                             borderRadius: 2,
                                             px: 1.5,
-                                            py: 0.8,
+                                            py: 1.8,
                                             display: "flex",
                                             alignItems: "center",
                                             gap: 0.6,
