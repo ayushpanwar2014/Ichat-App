@@ -1,0 +1,44 @@
+/* Glassmorphism Toast Style */
+.Toastify__toast {
+    background: rgba(29, 6, 6, 0.35) !important;
+    backdrop-filter: blur(12px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(12px) saturate(180%) !important;
+    color: #fff !important;
+    border-radius: 14px !important;
+    padding: 14px 18px !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25) !important;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    animation: fadeIn 0.35s ease, fadeOut 0.35s ease 2.7s forwards;
+}
+
+/* Remove progress bar */
+.Toastify__progress-bar {
+    display: none !important;
+}
+
+/* Smooth fade in/out */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+}

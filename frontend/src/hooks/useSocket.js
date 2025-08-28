@@ -1,6 +1,5 @@
 import { useEffect, useRef } from "react";
 import {io} from 'socket.io-client';
-
 export const useSocket = (user, backendURL, onMessage, onTyping, onStopTyping) => {
     const socketRef = useRef(null);
 
@@ -12,7 +11,9 @@ export const useSocket = (user, backendURL, onMessage, onTyping, onStopTyping) =
 
         socket.emit("setup", user);
 
-        socket.on("connected", () => console.log("✅ Socket connected"));
+        socket.on("connected", () => {});
+        console.log(onMessage);
+
         socket.on("message received", onMessage);
 
         // ✅ chat-aware typing

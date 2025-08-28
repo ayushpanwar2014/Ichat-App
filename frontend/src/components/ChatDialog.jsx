@@ -19,7 +19,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { useContext, useState } from "react";
 import { AppContext } from "../context/exportAppContext";
 import axios from "axios";
-import { notifyError, notifySuccess } from "./notification/toast";
+import { addedToGroup, notifyError, removeToGroup, renameToGroup } from "./notification/toast";
 import { ChatContext } from "../context/exportChatContext";
 
 export default function ChatDialog({
@@ -38,7 +38,7 @@ export default function ChatDialog({
     const [search, setSearch] = useState("")
     const [newGroupName, setNewGroupName] = useState(selectedChat?.chatName || "");
     const [renaming, setRenaming] = useState(false);
-    
+
     const handleRenameGroup = async () => {
 
         if (!newGroupName.trim()) return notifyError("Please enter a group name");
@@ -52,7 +52,7 @@ export default function ChatDialog({
             );
 
             if (resp.data.success) {
-                notifySuccess(resp.data.msg);
+                renameToGroup(resp.data.msg);
                 // Update the selected chat locally
                 setSelectedChat(resp.data.data);
                 onFetchAllUserChats();
@@ -118,7 +118,7 @@ export default function ChatDialog({
             const resp = await axios.put(backendURL + '/api/chat/addtogroup', { chatId, newUsers }, { withCredentials: true });
 
             if (resp.data.success) {
-                notifySuccess(resp.data.msg);
+                addedToGroup(resp.data.msg);
 
                 // ✅ Update selectedChat locally
                 const updatedChat = {
@@ -150,7 +150,7 @@ export default function ChatDialog({
             );
 
             if (resp.data.success) {
-                notifySuccess(resp.data.msg);
+                removeToGroup(resp.data.msg);
 
                 // ✅ Update selectedChat locally
                 const updatedChat = {
@@ -440,13 +440,14 @@ export default function ChatDialog({
                                                 <Avatar src={u.image} sx={{ width: 28, height: 28 }} />
                                                 <Typography>{u.name}</Typography>
                                             </Box>
-                                            <IconButton
-                                                size="small"
-                                                sx={{ color: isRemoved ? "lightgreen" : "white" }}
-                                                onClick={() => handleToggleUser(u._id)}
-                                            >
-                                                {isRemoved ? <AddIcon fontSize="small" /> : <ClearIcon fontSize="small" />}
-                                            </IconButton>
+                                            {isGroup && selectedChat?.groupAdmin?._id === user._id &&
+                                                <IconButton
+                                                    size="small"
+                                                    sx={{ color: isRemoved ? "lightgreen" : "white" }}
+                                                    onClick={() => handleToggleUser(u._id)}
+                                                >
+                                                    {isRemoved ? <AddIcon fontSize="small" /> : <ClearIcon fontSize="small" />}
+                                                </IconButton>}
                                         </Box>
                                     );
                                 })}

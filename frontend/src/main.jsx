@@ -7,6 +7,7 @@ import { ProgressProvider } from "./context/ProgressContext.jsx";
 import AppContextProvider from "./context/AppContext.jsx";
 import { ToastContainer } from "react-toastify";
 import ChatContextProvider from "./context/ChatContext.jsx";
+import "./toast.css";   // 👈 custom styles
 
 createRoot(document.getElementById("root")).render(
     <Router>
@@ -15,7 +16,15 @@ createRoot(document.getElementById("root")).render(
         <ChatContextProvider>
       <Provider>
         <App />
-          <ToastContainer/>
+            <ToastContainer position="top-center"
+              autoClose={3000}
+              hideProgressBar
+              newestOnTop
+              closeOnClick
+              pauseOnHover
+              draggable
+              pauseOnFocusLoss
+              />
       </Provider>
         </ChatContextProvider>
     </AppContextProvider>

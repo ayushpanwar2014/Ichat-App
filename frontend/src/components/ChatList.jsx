@@ -1,10 +1,19 @@
 import { useContext } from "react";
 import { ChatContext } from "../context/exportChatContext";
-import { Box, List, ListItem, Avatar, ListItemText, Typography, Chip, useMediaQuery } from "@mui/material";
-import GroupIcon from "@mui/icons-material/Group"; // <-- Import Group icon
+import {
+    Box,
+    List,
+    ListItem,
+    Avatar,
+    ListItemText,
+    Typography,
+    Chip,
+    useMediaQuery,
+} from "@mui/material";
+import GroupIcon from "@mui/icons-material/Group";
 
 export default function ChatList({ AllUsersChats, user, OnClickOfUserChat }) {
-    const { setSelectedChat } = useContext(ChatContext);
+    const { setSelectedChat, selectedChat } = useContext(ChatContext);
     const isMobile = useMediaQuery("(max-width:768px)");
 
     return (
@@ -18,7 +27,7 @@ export default function ChatList({ AllUsersChats, user, OnClickOfUserChat }) {
                 scrollBehavior: "smooth",
                 "&::-webkit-scrollbar": { display: "none" },
                 scrollbarWidth: "none",
-                scrollbarColor: "transparent transparent"
+                scrollbarColor: "transparent transparent",
             }}
         >
             <List>
@@ -27,22 +36,27 @@ export default function ChatList({ AllUsersChats, user, OnClickOfUserChat }) {
                     const otherUser = !isGroup
                         ? chat.users.find((u) => u._id !== user._id)
                         : null;
+                    const isActive = selectedChat?._id === chat._id;
 
                     return (
                         <ListItem
                             key={chat._id || index}
                             onClick={() => {
                                 setSelectedChat(chat);
-                                isMobile && OnClickOfUserChat();
+                                if (isMobile) OnClickOfUserChat();
                             }}
                             sx={{
-                                borderBottom: "0.5px solid rgba(255, 255, 255, 0.28)",
+                                borderBottom:
+                                    "0.5px solid rgba(255, 255, 255, 0.28)",
                                 display: "flex",
                                 flexDirection: "column",
                                 alignItems: "flex-start",
                                 borderRadius: 12,
                                 gap: 0.3,
                                 marginTop: 1,
+                                backgroundColor: isActive
+                                    ? "rgba(255,255,255,0.08)"
+                                    : "transparent",
                                 "&:hover": {
                                     backgroundColor: "rgba(255,255,255,0.05)",
                                     cursor: "pointer",
@@ -52,30 +66,61 @@ export default function ChatList({ AllUsersChats, user, OnClickOfUserChat }) {
                                 paddingX: { xs: 1, sm: 2 },
                             }}
                         >
-                            <Box sx={{ display: "flex", alignItems: "center", gap: { xs: 0.7, sm: 1 } }}>
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: { xs: 0.7, sm: 1 },
+                                }}
+                            >
                                 <Avatar
                                     src={!isGroup ? otherUser?.image : undefined}
                                     alt={isGroup ? chat.chatName : otherUser?.name}
-                                    sx={{ width: { xs: 28, sm: 35 }, height: { xs: 28, sm: 35 }, bgcolor: isGroup ? "primary.main" : "default" }}
+                                    sx={{
+                                        width: { xs: 28, sm: 35 },
+                                        height: { xs: 28, sm: 35 },
+                                        bgcolor: isGroup
+                                            ? "primary.main"
+                                            : "default",
+                                    }}
                                 >
-                                    {isGroup && <GroupIcon sx={{ fontSize: { xs: 16, sm: 20 }, color: "white" }} />}
+                                    {isGroup && (
+                                        <GroupIcon
+                                            sx={{
+                                                fontSize: { xs: 16, sm: 20 },
+                                                color: "white",
+                                            }}
+                                        />
+                                    )}
                                 </Avatar>
 
                                 <ListItemText
                                     primary={
-                                        <Box display="flex" alignItems="center" gap={1}>
+                                        <Box
+                                            display="flex"
+                                            alignItems="center"
+                                            gap={1}
+                                        >
                                             <Typography
                                                 sx={{
-                                                    fontSize: { xs: "0.75rem", sm: "0.85rem" },
+                                                    fontSize: {
+                                                        xs: "0.75rem",
+                                                        sm: "0.85rem",
+                                                    },
                                                     color: "whitesmoke",
                                                     fontWeight: 500,
                                                     whiteSpace: "nowrap",
                                                     overflow: "hidden",
                                                     textOverflow: "ellipsis",
-                                                    maxWidth: { xs: "120px", sm: "200px" },
+                                                    maxWidth: {
+                                                        xs: "120px",
+                                                        sm: "200px",
+                                                    },
                                                 }}
                                             >
-                                                {isGroup ? chat.chatName : otherUser?.name}
+                                                {isGroup
+                                                    ? chat.chatName
+                                                    : otherUser?.name}
                                             </Typography>
                                             {isGroup && (
                                                 <Chip
@@ -85,7 +130,8 @@ export default function ChatList({ AllUsersChats, user, OnClickOfUserChat }) {
                                                         fontSize: "0.6rem",
                                                         height: "18px",
                                                         color: "white",
-                                                        backgroundColor: "rgba(255,255,255,0.2)",
+                                                        backgroundColor:
+                                                            "rgba(255,255,255,0.2)",
                                                     }}
                                                 />
                                             )}
@@ -94,22 +140,35 @@ export default function ChatList({ AllUsersChats, user, OnClickOfUserChat }) {
                                     secondary={
                                         isGroup
                                             ? (() => {
-                                                const otherUsers = chat.users.filter(u => u._id !== user._id);
-                                                const displayedUsers = otherUsers.slice(0, 2).map(u => u.name).join(", ");
+                                                const otherUsers =
+                                                    chat.users.filter(
+                                                        (u) => u._id !== user._id
+                                                    );
+                                                const displayedUsers =
+                                                    otherUsers
+                                                        .slice(0, 2)
+                                                        .map((u) => u.name)
+                                                        .join(", ");
                                                 return otherUsers.length > 2
                                                     ? `${displayedUsers}, more...`
                                                     : displayedUsers;
                                             })()
-                                            : null
+                                            : chat.latestMessage?.content || null
                                     }
                                     secondaryTypographyProps={{
                                         sx: {
-                                            fontSize: { xs: "0.65rem", sm: "0.75rem" },
+                                            fontSize: {
+                                                xs: "0.65rem",
+                                                sm: "0.75rem",
+                                            },
                                             color: "rgba(255,255,255,0.7)",
                                             overflow: "hidden",
                                             textOverflow: "ellipsis",
                                             whiteSpace: "nowrap",
-                                            maxWidth: { xs: "150px", sm: "220px" },
+                                            maxWidth: {
+                                                xs: "150px",
+                                                sm: "220px",
+                                            },
                                         },
                                     }}
                                 />
@@ -119,5 +178,5 @@ export default function ChatList({ AllUsersChats, user, OnClickOfUserChat }) {
                 })}
             </List>
         </Box>
-    )
+    );
 }

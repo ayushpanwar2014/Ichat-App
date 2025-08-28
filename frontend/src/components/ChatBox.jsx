@@ -10,6 +10,7 @@ import ChatDialog from "./ChatDialog";
 import { AppContext } from "../context/exportAppContext";
 import ScrollableFeed from "react-scrollable-feed";
 import { useSocket } from "../hooks/useSocket";
+import { messageReceiveded, messageSented } from "./notification/toast";
 
 function ChatBox() {
     const { selectedChat, backendURL } = useContext(ChatContext);
@@ -48,7 +49,18 @@ function ChatBox() {
     const socketRef = useSocket(
         user,
         backendURL,
-        (newMessage) => setMessages((prev) => [...prev, newMessage]), // onMessage
+        (newMessage) => {
+            setMessages((prev) => [...prev, newMessage]); 
+            if (newMessage.chat.isGroupChat) {
+                // Group chat → show group name
+                console.log(newMessage);
+                
+                messageReceiveded(`${newMessage.content} from ${newMessage.sender.name} Group ${newMessage.chat.chatName}`);
+            } else {
+                // Direct chat → show sender's name
+                messageReceiveded(`${newMessage.content} from ${newMessage.sender.name}`);
+            }
+        }, // onMessage
         handleTyping,
         handleStopTyping
     );
@@ -116,7 +128,7 @@ function ChatBox() {
             chat: selectedChat._id,
             optimistic: true, // flag to identify it
         };
-
+        messageSented();
         setMessages((prev) => [...prev, tempMessage]); // show immediately
         setInput("");
 
@@ -156,7 +168,6 @@ function ChatBox() {
         );
     }
 
-    console.log("selected chat", selectedChat);
     return (
         <Box sx={{ flex: 1, display: "flex", flexDirection: "column", backgroundColor: "rgba(47, 47, 47, 0.05)", border: "0.5px solid rgba(255, 255, 255, 0.12)", borderRadius: "12px", mt: 5, overflow: "hidden", borderLeft: "none", borderRight: "none" }}>
             {/* Chat messages */}
