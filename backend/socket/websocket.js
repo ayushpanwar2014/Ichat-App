@@ -5,10 +5,11 @@ export const socketHandler = (io) => {
 
         // Setup event listeners
         socket.on("setup", (userData) => {
+            socket.userData = userData; // store user info
             socket.join(userData._id);
             socket.emit("connected");
-            console.log(`User setup: ${userData._id}`);
         });
+
 
         socket.on("join chat", (chatId) => {
             socket.join(chatId);
@@ -16,12 +17,13 @@ export const socketHandler = (io) => {
         });
 
         socket.on("typing", (chatId) => {
-            socket.in(chatId).emit("typing");
+            socket.in(chatId).emit("typing", { chatId, user: socket.userData });
         });
 
         socket.on("stop typing", (chatId) => {
-            socket.in(chatId).emit("stop typing");
+            socket.in(chatId).emit("stop typing", { chatId, user: socket.userData });
         });
+
 
         socket.on("new message", (newMessage) => {
             const chat = newMessage.chat;

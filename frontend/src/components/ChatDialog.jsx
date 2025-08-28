@@ -38,8 +38,9 @@ export default function ChatDialog({
     const [search, setSearch] = useState("")
     const [newGroupName, setNewGroupName] = useState(selectedChat?.chatName || "");
     const [renaming, setRenaming] = useState(false);
-
+    
     const handleRenameGroup = async () => {
+
         if (!newGroupName.trim()) return notifyError("Please enter a group name");
 
         setRenaming(true);
@@ -201,102 +202,85 @@ export default function ChatDialog({
                             Group Admin: {selectedChat.groupAdmin.name}
                         </Typography>
 
-                        <Box sx={{ display: "flex", gap: 1, mb: 2, mt: 1 }}>
-                            <TextField
-                                fullWidth
-                                placeholder="New group name"
-                                variant="outlined"
-                                value={newGroupName}
-                                onChange={(e) => setNewGroupName(e.target.value)}
-                                sx={{
-                                    backgroundColor: "rgba(255,255,255,0.05)",
-                                    borderRadius: 5,
-                                    "& .MuiInputBase-input": { color: "whitesmoke" },
-                                    "& .MuiOutlinedInput-root": {
-                                        "& fieldset": { border: "none" },
-                                        "&:hover fieldset": { border: "none" },
-                                        "&.Mui-focused fieldset": { border: "none" },
-                                    },
-                                }}
-                            />
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                size="small"
-                                onClick={handleRenameGroup}
-                                disabled={renaming}
-                                sx={{
-                                    height: 50,
-                                    px:4,
-                                    fontSize: 11,
-                                    borderRadius: 5,
-                                    backgroundColor: "rgba(255,255,255,0.15)",
-                                    color: "whitesmoke",
-                                    "&:hover": { backgroundColor: "rgba(255,255,255,0.25)" },
-                                }}
-                            >
-                                {renaming ? "Renaming..." : "Rename"}
-                            </Button>
-                        </Box>
+                        {isGroup && selectedChat?.groupAdmin?._id === user._id && (
+                            <>
+                                {/* Rename Group */}
+                                <Box sx={{ display: "flex", gap: 1, mb: 2, mt: 1 }}>
+                                    <TextField
+                                        fullWidth
+                                        placeholder="New group name"
+                                        variant="outlined"
+                                        value={newGroupName}
+                                        onChange={(e) => setNewGroupName(e.target.value)}
+                                        sx={{
+                                            backgroundColor: "rgba(255,255,255,0.05)",
+                                            borderRadius: 5,
+                                            "& .MuiInputBase-input": { color: "whitesmoke" },
+                                            "& .MuiOutlinedInput-root": {
+                                                "& fieldset": { border: "none" },
+                                                "&:hover fieldset": { border: "none" },
+                                                "&.Mui-focused fieldset": { border: "none" },
+                                            },
+                                        }}
+                                    />
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        size="small"
+                                        onClick={handleRenameGroup}
+                                        disabled={renaming}
+                                        sx={{
+                                            height: 50,
+                                            px: 4,
+                                            fontSize: 11,
+                                            borderRadius: 5,
+                                            backgroundColor: "rgba(255,255,255,0.15)",
+                                            color: "whitesmoke",
+                                            "&:hover": { backgroundColor: "rgba(255,255,255,0.25)" },
+                                        }}
+                                    >
+                                        {renaming ? "Renaming..." : "Rename"}
+                                    </Button>
+                                </Box>
 
-
-                        {/* ✅ Search User to Add */}
-                        <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
-                            <TextField
-                                fullWidth
-                                placeholder="Search user to add..."
-                                variant="outlined"
-                                type="text"
-                                name="search"
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                                sx={{
-                                    backgroundColor: "rgba(255,255,255,0.05)",
-                                    borderRadius: 5,
-                                    "& .MuiInputBase-input": {
-                                        color: "whitesmoke",
-                                    },
-                                    "& .MuiInputLabel-root": {
-                                        color: "whitesmoke",
-                                    },
-                                    "& .MuiOutlinedInput-root": {
-                                        "& fieldset": { border: "none" },
-                                        "&:hover fieldset": { border: "none" },
-                                        "&.Mui-focused fieldset": { border: "none" },
-                                    },
-                                    // ✅ Fix autofill styles
-                                    "& input:-webkit-autofill": {
-                                        WebkitBoxShadow: "0 0 0 100px rgba(255,255,255,0.05) inset",
-                                        borderRadius: 5,
-                                        WebkitTextFillColor: "whitesmoke",
-                                        caretColor: "whitesmoke",
-                                        transition: "background-color 9999s ease-in-out 0s",
-                                    },
-                                    "& input:-webkit-autofill:focus": {
-                                        WebkitBoxShadow: "0 0 0 100px rgba(255,255,255,0.05) inset",
-                                        WebkitTextFillColor: "whitesmoke",
-                                        caretColor: "whitesmoke",
-                                    },
-                                }}
-                            />
-
-                            <Button
-                                variant="contained"
-                                sx={{
-                                    height: 50,
-                                    fontSize: 13,
-                                    borderRadius: 5,
-                                    backgroundColor: "rgba(255,255,255,0.15)",
-                                    color: "whitesmoke",
-                                    "&:hover": { backgroundColor: "rgba(255,255,255,0.25)" },
-                                }}
-                                onClick={handleSearchUser}
-                            >
-                                Go
-                            </Button>
-                        </Box>
-
-
+                                {/* Search User to Add */}
+                                <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
+                                    <TextField
+                                        fullWidth
+                                        placeholder="Search user to add..."
+                                        variant="outlined"
+                                        type="text"
+                                        name="search"
+                                        value={search}
+                                        onChange={(e) => setSearch(e.target.value)}
+                                        sx={{
+                                            backgroundColor: "rgba(255,255,255,0.05)",
+                                            borderRadius: 5,
+                                            "& .MuiInputBase-input": { color: "whitesmoke" },
+                                            "& .MuiOutlinedInput-root": {
+                                                "& fieldset": { border: "none" },
+                                                "&:hover fieldset": { border: "none" },
+                                                "&.Mui-focused fieldset": { border: "none" },
+                                            },
+                                        }}
+                                    />
+                                    <Button
+                                        variant="contained"
+                                        sx={{
+                                            height: 50,
+                                            fontSize: 13,
+                                            borderRadius: 5,
+                                            backgroundColor: "rgba(255,255,255,0.15)",
+                                            color: "whitesmoke",
+                                            "&:hover": { backgroundColor: "rgba(255,255,255,0.25)" },
+                                        }}
+                                        onClick={handleSearchUser}
+                                    >
+                                        Go
+                                    </Button>
+                                </Box>
+                            </>
+                        )}
 
                         {/* ✅ Show Added Users */}
                         {addedUsers.length > 0 && (

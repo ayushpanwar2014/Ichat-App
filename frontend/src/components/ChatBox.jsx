@@ -18,12 +18,24 @@ function ChatBox() {
     const { user } = useContext(AppContext);
     const [loadingMessages, setLoadingMessages] = useState(false);
 
-    const [isTyping, setIsTyping] = useState(false);
     const [typing, setTyping] = useState(false);
 
     const [openProfile, setOpenProfile] = useState(false);
     const [profileUser, setProfileUser] = useState(null); // For single user
     const isGroup = selectedChat?.isGroupChat;
+
+    const [typingUsers, setTypingUsers] = useState([]); // array of { user, chatId }
+
+    const handleTyping = (data) => {
+        if (data.chatId !== selectedChat._id) return; // only for current chat
+        setTypingUsers((prev) => [...prev.filter(u => u.user._id !== data.user._id), data]);
+    };
+
+    const handleStopTyping = (data) => {
+        if (data.chatId !== selectedChat._id) return; // only for current chat
+        setTypingUsers((prev) => prev.filter(u => u.user._id !== data.user._id));
+    };
+
 
     const getProfileUser = () => {
         if (!selectedChat) return null;
@@ -37,9 +49,10 @@ function ChatBox() {
         user,
         backendURL,
         (newMessage) => setMessages((prev) => [...prev, newMessage]), // onMessage
-        () => setIsTyping(true), // onTyping
-        () => setIsTyping(false) // onStopTyping
+        handleTyping,
+        handleStopTyping
     );
+
 
     // join the selected chat
     useEffect(() => {
@@ -243,61 +256,53 @@ function ChatBox() {
                             })}
 
                             {/* ✅ Typing indicator inside feed */}
-                            {isTyping && (
-                                <Box
-                                    sx={{
-                                        display: "flex",
-                                        alignItems: "flex-end",
-                                        gap: 1,
-                                        mb: 1,
-                                    }}
-                                >
+                                {typingUsers.map((typingUser) => (
                                     <Box
-                                        component="img"
-                                        src={getProfileUser()?.image}
-                                        alt={getProfileUser()?.name}
-                                        sx={{ width: 35, height: 35, borderRadius: "50%" }}
-                                    />
-
-                                    <Box
+                                        key={typingUser.user._id}
                                         sx={{
-                                            bgcolor: "grey.700",
-                                            borderRadius: 2,
-                                            px: 1.5,
-                                            py: 1.8,
                                             display: "flex",
-                                            alignItems: "center",
-                                            gap: 0.6,
-                                            maxWidth: "65%",
-                                            boxShadow: 1,
+                                            alignItems: "flex-end",
+                                            gap: 1,
+                                            mb: 1,
                                         }}
                                     >
-                                        {[0, 0.2, 0.4].map((delay, i) => (
-                                            <Box
-                                                key={i}
-                                                sx={{
-                                                    width: 6,
-                                                    height: 6,
-                                                    bgcolor: "white",
-                                                    borderRadius: "50%",
-                                                    animation: "blink 1.4s infinite both",
-                                                    animationDelay: `${delay}s`,
-                                                }}
-                                            />
-                                        ))}
-                                    </Box>
+                                        <Box
+                                            component="img"
+                                            src={typingUser.user.image}
+                                            alt={typingUser.user.name}
+                                            sx={{ width: 35, height: 35, borderRadius: "50%" }}
+                                        />
 
-                                    <style>
-                                        {`
-              @keyframes blink {
-                0% { opacity: .2; }
-                20% { opacity: 1; }
-                100% { opacity: .2; }
-              }
-            `}
-                                    </style>
-                                </Box>
-                            )}
+                                        <Box
+                                            sx={{
+                                                bgcolor: "grey.700",
+                                                borderRadius: 2,
+                                                px: 1.5,
+                                                py: 1.8,
+                                                display: "flex",
+                                                alignItems: "center",
+                                                gap: 0.6,
+                                                maxWidth: "65%",
+                                                boxShadow: 1,
+                                            }}
+                                        >
+                                            {[0, 0.2, 0.4].map((delay, i) => (
+                                                <Box
+                                                    key={i}
+                                                    sx={{
+                                                        width: 6,
+                                                        height: 6,
+                                                        bgcolor: "white",
+                                                        borderRadius: "50%",
+                                                        animation: "blink 1.4s infinite both",
+                                                        animationDelay: `${delay}s`,
+                                                    }}
+                                                />
+                                            ))}
+                                        </Box>
+                                    </Box>
+                                ))}
+
                         </>
                     )}
 
