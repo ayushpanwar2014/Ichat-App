@@ -13,7 +13,6 @@ import { dbConnected } from './config/dbConnect.js';
 import User_Router from './src/routes/user-routes.js';
 import Chat_Router from './src/routes/chat-routes.js';
 import Message_Router from './src/routes/message-routes.js';
-import { socketHandler } from './socket/websocket.js';
 
 dotenv.config();
 
@@ -33,8 +32,6 @@ const io = new Server(httpServer, {
     },
 });
 
-// plug socket handler
-socketHandler(io);
 
 // connect cloudinary
 connectCloudinary().then(() => console.log('Cloudinary Connected ✅'));

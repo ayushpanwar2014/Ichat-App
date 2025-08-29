@@ -9,8 +9,7 @@ import VisibleIcon from "./visibleIcon";
 import ChatDialog from "./ChatDialog";
 import { AppContext } from "../context/exportAppContext";
 import ScrollableFeed from "react-scrollable-feed";
-import { useSocket } from "../hooks/useSocket";
-import { messageReceiveded, messageSented } from "./notification/toast";
+import { messageSented } from "./notification/toast";
 
 function ChatBox() {
     const { selectedChat, backendURL } = useContext(ChatContext);
@@ -19,23 +18,11 @@ function ChatBox() {
     const { user } = useContext(AppContext);
     const [loadingMessages, setLoadingMessages] = useState(false);
 
-    const [typing, setTyping] = useState(false);
 
     const [openProfile, setOpenProfile] = useState(false);
     const [profileUser, setProfileUser] = useState(null); // For single user
     const isGroup = selectedChat?.isGroupChat;
 
-    const [typingUsers, setTypingUsers] = useState([]); // array of { user, chatId }
-
-    const handleTyping = (data) => {
-        if (data.chatId !== selectedChat._id) return; // only for current chat
-        setTypingUsers((prev) => [...prev.filter(u => u.user._id !== data.user._id), data]);
-    };
-
-    const handleStopTyping = (data) => {
-        if (data.chatId !== selectedChat._id) return; // only for current chat
-        setTypingUsers((prev) => prev.filter(u => u.user._id !== data.user._id));
-    };
 
 
     const getProfileUser = () => {
@@ -45,33 +32,7 @@ function ChatBox() {
         return selectedChat.users.find(u => u._id !== user._id);
     };
 
-    // ✅ socket hook usage
-    const socketRef = useSocket(
-        user,
-        backendURL,
-        (newMessage) => {
-            setMessages((prev) => [...prev, newMessage]); 
-            if (newMessage.chat.isGroupChat) {
-                // Group chat → show group name
-                console.log(newMessage);
-                
-                messageReceiveded(`${newMessage.content} from ${newMessage.sender.name} Group ${newMessage.chat.chatName}`);
-            } else {
-                // Direct chat → show sender's name
-                messageReceiveded(`${newMessage.content} from ${newMessage.sender.name}`);
-            }
-        }, // onMessage
-        handleTyping,
-        handleStopTyping
-    );
 
-
-    // join the selected chat
-    useEffect(() => {
-        if (selectedChat && socketRef.current) {
-            socketRef.current.emit("join chat", selectedChat._id);
-        }
-    }, [selectedChat, socketRef]);
 
     // Fetch messages whenever chat changes
     useEffect(() => {
@@ -98,23 +59,7 @@ function ChatBox() {
         fetchMessages();
     }, [selectedChat, backendURL]);
 
-    const typingHandler = (e) => {
-        setInput(e.target.value);
-        if (!socketRef.current) return;
 
-        if (!typing) {
-            setTyping(true);
-            socketRef.current.emit("typing", selectedChat._id);
-        }
-
-        let lastTypingTime = Date.now();
-        setTimeout(() => {
-            if (Date.now() - lastTypingTime >= 4000 && typing) {
-                socketRef.current.emit("stop typing", selectedChat._id);
-                setTyping(false);
-            }
-        }, 4000);
-    };
 
 
     const handleSend = async () => {
@@ -150,8 +95,6 @@ function ChatBox() {
                     )
                 );
 
-                socketRef.current.emit("new message", newMessage);
-                socketRef.current.emit("stop typing", selectedChat._id);
             }
         } catch (error) {
             console.error("Error sending message:", error);
@@ -265,55 +208,6 @@ function ChatBox() {
                                     </Box>
                                 );
                             })}
-
-                            {/* ✅ Typing indicator inside feed */}
-                                {typingUsers.map((typingUser) => (
-                                    <Box
-                                        key={typingUser.user._id}
-                                        sx={{
-                                            display: "flex",
-                                            alignItems: "flex-end",
-                                            gap: 1,
-                                            mb: 1,
-                                        }}
-                                    >
-                                        <Box
-                                            component="img"
-                                            src={typingUser.user.image}
-                                            alt={typingUser.user.name}
-                                            sx={{ width: 35, height: 35, borderRadius: "50%" }}
-                                        />
-
-                                        <Box
-                                            sx={{
-                                                bgcolor: "grey.700",
-                                                borderRadius: 2,
-                                                px: 1.5,
-                                                py: 1.8,
-                                                display: "flex",
-                                                alignItems: "center",
-                                                gap: 0.6,
-                                                maxWidth: "65%",
-                                                boxShadow: 1,
-                                            }}
-                                        >
-                                            {[0, 0.2, 0.4].map((delay, i) => (
-                                                <Box
-                                                    key={i}
-                                                    sx={{
-                                                        width: 6,
-                                                        height: 6,
-                                                        bgcolor: "white",
-                                                        borderRadius: "50%",
-                                                        animation: "blink 1.4s infinite both",
-                                                        animationDelay: `${delay}s`,
-                                                    }}
-                                                />
-                                            ))}
-                                        </Box>
-                                    </Box>
-                                ))}
-
                         </>
                     )}
 
@@ -363,7 +257,7 @@ function ChatBox() {
                             caretColor: "whitesmoke",
                         },
                     }}
-                    onChange={(e) => typingHandler(e)}
+                    onChange={(e) => setInput(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleSend()}
                     InputProps={{
                         startAdornment: (
