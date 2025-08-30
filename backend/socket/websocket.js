@@ -15,6 +15,15 @@ export const socketHandler = (io) => {
             console.log('User Join chat ', room);
         })
 
+        socket.on("typing", (chatId, user) => {
+            
+            socket.in(chatId).emit('typing', user);
+        })
+
+        socket.on("stop typing", (chatId) => {
+            socket.in(chatId).emit('stop typing');
+        })
+
         socket.on("send msg", (chatId, newMessage) => {
             const chat = newMessage.chat;
 

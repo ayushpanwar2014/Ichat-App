@@ -10,10 +10,10 @@ import ChatDialog from "./ChatDialog";
 import { AppContext } from "../context/exportAppContext";
 import ScrollableFeed from "react-scrollable-feed";
 import { messageReceived, messageSented } from "./notification/toast";
-import {io} from "socket.io-client";
+import { io } from "socket.io-client";
 
 
-var socket, selectedChatCompare; 
+var socket, selectedChatCompare;
 
 function ChatBox() {
 
@@ -23,17 +23,22 @@ function ChatBox() {
     const { user } = useContext(AppContext);
     const [loadingMessages, setLoadingMessages] = useState(false);
 
+    const [typingUser, setTypingUser] = useState({});
 
     const [openProfile, setOpenProfile] = useState(false);
     const [profileUser, setProfileUser] = useState(null); // For single user
     const isGroup = selectedChat?.isGroupChat;
 
-    const [socketConnected, setSocketConnected] = useState(false);
+
+    const [typing, setTyping] = useState(false);
+    const [istyping, setIsTyping] = useState(false);
 
     useEffect(() => {
         socket = io(backendURL);
         socket.emit("setup", user);
-        socket.on("connection", () => setSocketConnected(true));
+        socket.on("connection");
+        socket.on("typing", (user) => { setIsTyping(true); setTypingUser(user); })
+        socket.on("stop typing", () => { setIsTyping(false) })
     }, [])
 
     const getProfileUser = () => {
@@ -69,36 +74,31 @@ function ChatBox() {
         selectedChatCompare = selectedChat;
     }, [selectedChat, backendURL]);
 
-
-
+    //receive msg in current chat
     useEffect(() => {
 
         // Listen for incoming messages
         socket.on("receiveMessage", (messageReceiveded) => {
-            console.log("msg ",messageReceiveded);
-
-            console.log("sele ",selectedChatCompare);
-            
-                setMessages((prev) => [...prev, messageReceiveded]);    
-
+            setMessages((prev) => [...prev, messageReceiveded]);
         });
 
         return () => {
             socket.off("receiveMessage");
         };
-  
-    },[selectedChat]); // re-run when chat changes
 
+    }, [selectedChat]); // re-run when chat changes
+
+    //send notification to all user who is not in current chat
     useEffect(() => {
         socket.on("messageNotification", (newMessage) => {
 
             if (!selectedChatCompare || selectedChatCompare._id !== newMessage.chat._id) {
 
-                if(newMessage.chat.isGroupChat){
+                if (newMessage.chat.isGroupChat) {
 
                     messageReceived(`${newMessage.content} from  ${newMessage.sender.name} Group ${newMessage.chat.chatName}`);
                 }
-                else{
+                else {
 
                     messageReceived(`${newMessage.content} from  ${newMessage.sender.name}`);
                 }
@@ -108,7 +108,7 @@ function ChatBox() {
         return () => socket.off("messageNotification");
     }, []);
 
-
+    //send message
     const handleSend = async () => {
         if (!input.trim() || !selectedChat) return;
 
@@ -142,7 +142,7 @@ function ChatBox() {
                     )
                 );
 
-                socket.emit('send msg', selectedChat._id,newMessage);
+                socket.emit('send msg', selectedChat._id, newMessage);
 
             }
         } catch (error) {
@@ -152,6 +152,30 @@ function ChatBox() {
         }
     };
 
+
+    const typingHandler = (e) => {
+        setInput(e.target.value)
+
+        if (!typing) {
+            setTyping(true);
+            socket.emit("typing", selectedChat._id, user)
+        }
+
+        let lastTypingTime = new Date().getTime();
+        var timerLength = 3000;
+
+        setTimeout(() => {
+            var timeNow = new Date().getTime();
+            var timeDiff = timeNow - lastTypingTime;
+
+            if (timeDiff >= timerLength && typing) {
+                socket.emit('stop typing', selectedChat._id)
+                setTyping(false)
+            }
+
+        }, timerLength)
+
+    }
 
     if (!selectedChat) {
 
@@ -261,6 +285,56 @@ function ChatBox() {
                     )}
 
                 </ScrollableFeed>
+
+                {
+                    istyping &&
+                    <>
+                        <Box
+                            sx={{
+                                display: "flex",
+                                alignItems: "flex-end",
+                                gap: 1,
+                                mb: 1,
+                            }}
+                        >
+                            <Box
+                                component="img"
+                                src={typingUser.image}
+                                alt={typingUser.name}
+                                sx={{ width: 35, height: 35, borderRadius: "50%" }}
+                            />
+
+                            <Box
+                                sx={{
+                                    bgcolor: "grey.700",
+                                    borderRadius: 2,
+                                    px: 1.5,
+                                    py: 1.8,
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 0.6,
+                                    maxWidth: "65%",
+                                    boxShadow: 1,
+                                }}
+                            >
+                                {[0, 0.2, 0.4].map((delay, i) => (
+                                    <Box
+                                        key={i}
+                                        sx={{
+                                            width: 6,
+                                            height: 6,
+                                            bgcolor: "white",
+                                            borderRadius: "50%",
+                                            animation: "blink 1.4s infinite both",
+                                            animationDelay: `${delay}s`,
+                                        }}
+                                    />
+                                ))}
+                            </Box>
+                        </Box>
+                    </>
+                }
+
             </Box>
 
 
@@ -306,7 +380,7 @@ function ChatBox() {
                             caretColor: "whitesmoke",
                         },
                     }}
-                    onChange={(e) => setInput(e.target.value)}
+                    onChange={typingHandler}
                     onKeyDown={(e) => e.key === "Enter" && handleSend()}
                     InputProps={{
                         startAdornment: (
