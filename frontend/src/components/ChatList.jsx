@@ -153,7 +153,7 @@ export default function ChatList({ AllUsersChats, user, OnClickOfUserChat }) {
                                                     ? `${displayedUsers}, more...`
                                                     : displayedUsers;
                                             })()
-                                            : chat.latestMessage?.content || null
+                                            : chat?.latestMessage?.content || "No Message !"
                                     }
                                     secondaryTypographyProps={{
                                         sx: {

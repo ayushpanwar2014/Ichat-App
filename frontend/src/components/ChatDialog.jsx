@@ -175,11 +175,11 @@ export default function ChatDialog({
             onClose={() => { setOpenProfile(false); setSearchResults([]); }}
             PaperProps={{
                 sx: {
-                    backgroundColor: "rgba(101, 38, 38, 0.35)",
+                    backgroundColor: "rgba(29, 6, 6, 0.35)", // ✅ semi-transparent bg
+                    backdropFilter: "blur(12px) saturate(180%)", // ✅ blur effect
+                    WebkitBackdropFilter: "blur(12px) saturate(180%)", // ✅ iOS/Safari
                     border: "0.5px solid rgba(255, 255, 255, 0.12)",
-                    borderRadius: 3,
-                    backdropFilter: "blur(10px) saturate(180%)",
-                    WebkitBackdropFilter: "blur(10px) saturate(180%)",
+                    borderRadius: 4,
                     color: "whitesmoke",
                     minWidth: 340,
                 },

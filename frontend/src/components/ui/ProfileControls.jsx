@@ -8,19 +8,31 @@ import {
     DialogContent,
     DialogTitle,
     IconButton,
+    Menu,
+    MenuItem,
+    ListItemText,
+    Grow,
 } from "@mui/material";
 import { AppContext } from "../../context/exportAppContext";
 import LogoutIcon from "@mui/icons-material/Logout";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import CloseIcon from "@mui/icons-material/Close";
-
-const notificationCount = 3;
+import { ChatContext } from "../../context/exportChatContext";
 
 export default function ProfileControls() {
-    const { user } = useContext(AppContext);
-    const { fetchLogout } = useContext(AppContext);
+    const { user, fetchLogout } = useContext(AppContext);
+    const { notification } = useContext(ChatContext);
 
     const [openProfile, setOpenProfile] = useState(false);
+    const [anchorEl, setAnchorEl] = useState(null);
+
+    const handleNotificationClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleCloseNotification = () => {
+        setAnchorEl(null);
+    };
 
     return (
         <>
@@ -70,6 +82,7 @@ export default function ProfileControls() {
 
                 {/* Notifications */}
                 <Box
+                    onClick={handleNotificationClick}
                     sx={{
                         width: "20px",
                         height: "20px",
@@ -82,7 +95,7 @@ export default function ProfileControls() {
                     }}
                 >
                     <Badge
-                        badgeContent={notificationCount}
+                        badgeContent={notification.length}
                         color="error"
                         sx={{
                             "& .MuiBadge-badge": {
@@ -117,19 +130,77 @@ export default function ProfileControls() {
                 </Box>
             </Box>
 
+            {/* Notifications Menu */}
+            {/* Notifications Menu */}
+            <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleCloseNotification}
+                TransitionComponent={Grow}
+                PaperProps={{
+                    sx: {
+                        mt: 1,
+                        backgroundColor: "rgba(29, 6, 6, 0.35)", // ✅ semi-transparent bg
+                        borderRadius: 2,
+                        color: "white",
+                        border: "0.5px solid rgba(255, 255, 255, 0.12)",
+                        minWidth: 200, // smaller dropdown
+                        backdropFilter: "blur(12px) saturate(180%)", // ✅ blur effect
+                        WebkitBackdropFilter: "blur(12px) saturate(180%)", // ✅ iOS/Safari
+                        boxShadow: "0 4px 20px rgba(0,0,0,0.25)", // ✅ subtle shadow
+                    },
+                }}
+            >
+                {notification.length === 0 ? (
+                    <MenuItem dense>
+                        <ListItemText
+                            primary="No new notifications"
+                            primaryTypographyProps={{ fontSize: "0.75rem" }} // smaller font
+                        />
+                    </MenuItem>
+                ) : (
+                    notification.map((n, i) => (
+                        <MenuItem
+                            key={i}
+                            onClick={handleCloseNotification}
+                            dense
+                            sx={{
+                                px: 1.5,
+                                py: 1,
+                            }}
+                        >
+                            <ListItemText
+                                primary={`${n.sender?.name || "Someone"} sent a message`}
+                                secondary={n.content || ""}
+                                primaryTypographyProps={{
+                                    fontSize: "0.75rem", // smaller font
+                                    color: "white",
+                                }}
+                                secondaryTypographyProps={{
+                                    fontSize: "0.65rem", // even smaller for secondary
+                                    color: "rgba(255,255,255,0.6)",
+                                }}
+                            />
+                        </MenuItem>
+                    ))
+                )}
+            </Menu>
+
+
             {/* Profile Dialog */}
             <Dialog
                 open={openProfile}
                 onClose={() => setOpenProfile(false)}
                 PaperProps={{
                     sx: {
-                        backgroundColor: "rgba(101, 38, 38, 0.35)",
+                        backgroundColor: "rgba(29, 6, 6, 0.35)", // ✅ semi-transparent bg
+                        backdropFilter: "blur(12px) saturate(180%)", // ✅ blur effect
+                        WebkitBackdropFilter: "blur(12px) saturate(180%)", // ✅ iOS/Safari
+                        boxShadow: "0 4px 20px rgba(0,0,0,0.25)", // ✅ subtle shadow
                         border: "0.5px solid rgba(255, 255, 255, 0.12)",
-                        borderRadius: 3, // optional: smoother edges
-                        backdropFilter: "blur(10px) saturate(180%)", // matches your glassmorphism
-                        WebkitBackdropFilter: "blur(10px) saturate(180%)",
-                        color: "whitesmoke", // makes text visible on dark bg
-                    }
+                        borderRadius: 3,
+                        color: "whitesmoke",
+                    },
                 }}
             >
                 <DialogTitle
@@ -153,7 +224,6 @@ export default function ProfileControls() {
                     </Typography>
                 </DialogContent>
             </Dialog>
-
         </>
     );
 }

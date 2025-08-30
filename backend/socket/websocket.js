@@ -5,10 +5,16 @@ export const socketHandler = (io) => {
         console.log('Socket connected client', socket.id);
 
         socket.on("setup", (userData) => {
+            if (!userData || !userData._id) {
+                console.log("Invalid setup, disconnecting socket", socket.id);
+                socket.disconnect();
+                return;
+            }
+
             socket.join(userData._id);
-            console.log('user id', userData._id);
-            socket.emit("connected")
-        })
+            console.log("User setup:", userData._id);
+            socket.emit("connected");
+        });
 
         socket.on("join chat", (room) => {
             socket.join(room);
@@ -45,6 +51,7 @@ export const socketHandler = (io) => {
         socket.on("disconnect", () => {
             console.log("User disconnected:", socket.id);
         });
+
     });
 
 }

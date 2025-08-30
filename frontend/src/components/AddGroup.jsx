@@ -52,11 +52,12 @@ export default function AddGroup({ open, onClose, allUsers, onCreate }) {
             onClose={onClose}
             PaperProps={{
                 sx: {
-                    backgroundColor: "rgba(101, 38, 38, 0.35)",
-                    border: "0.5px solid rgba(255, 255, 255, 0.12)",
+                    backgroundColor: "rgba(29, 6, 6, 0.35)", // ✅ semi-transparent bg
+                    backdropFilter: "blur(12px) saturate(180%)", // ✅ blur effect
+                    WebkitBackdropFilter: "blur(12px) saturate(180%)", // ✅ iOS/Safari
+                    boxShadow: "0 4px 20px rgba(0,0,0,0.25)", // ✅ subtle shadow
                     borderRadius: 3,
-                    backdropFilter: "blur(10px) saturate(180%)",
-                    WebkitBackdropFilter: "blur(10px) saturate(180%)",
+                    border: "0.5px solid rgba(255, 255, 255, 0.12)",
                     color: "whitesmoke",
                     width: 500,
 

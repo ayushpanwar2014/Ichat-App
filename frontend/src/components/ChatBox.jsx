@@ -20,13 +20,11 @@ const bounce = keyframes`
   100% { transform: translateY(0); opacity: 0.3; }
 `;
 
-
-
 var socket, selectedChatCompare;
 
 function ChatBox() {
 
-    const { selectedChat, backendURL } = useContext(ChatContext);
+    const { selectedChat, backendURL, setNotification } = useContext(ChatContext);
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState("");
     const { user } = useContext(AppContext);
@@ -38,16 +36,39 @@ function ChatBox() {
     const [profileUser, setProfileUser] = useState(null); // For single user
     const isGroup = selectedChat?.isGroupChat;
 
+    const [socketConnected, setSocketConnected] = useState(false);
 
     const [typing, setTyping] = useState(false);
     const [istyping, setIsTyping] = useState(false);
 
     useEffect(() => {
+
+        if (!user || !user._id) {
+            if (socket) {
+                socket.disconnect();   // kill the socket
+                socket = null;
+            }
+            return;
+        }
+
         socket = io(backendURL);
         socket.emit("setup", user);
-        socket.on("connection");
-        socket.on("typing", (user) => { setIsTyping(true); setTypingUser(user); })
+        socket.on("connected", () => { setSocketConnected(true) });
+        socket.on("typing", (user) => {
+            setIsTyping(true); setTypingUser(user);
+        })
         socket.on("stop typing", () => { setIsTyping(false) })
+
+        return () => {
+            if (socket) {
+                socket.off("connected");
+                socket.off("typing");
+                socket.off("stop typing");
+                socket.off("receiveMessage");
+                socket.off("messageNotification");
+                socket.disconnect(); // cleanup when ChatBox unmounts or user changes
+            }
+        };
     }, [])
 
     const getProfileUser = () => {
@@ -104,12 +125,11 @@ function ChatBox() {
 
             if (!selectedChatCompare || selectedChatCompare._id !== newMessage.chat._id) {
 
+                    setNotification((prev) => [...prev, newMessage]);
                 if (newMessage.chat.isGroupChat) {
-
                     messageReceived(`${newMessage.content} from  ${newMessage.sender.name} Group ${newMessage.chat.chatName}`);
                 }
                 else {
-
                     messageReceived(`${newMessage.content} from  ${newMessage.sender.name}`);
                 }
             }
@@ -166,6 +186,8 @@ function ChatBox() {
 
     const typingHandler = (e) => {
         setInput(e.target.value)
+
+        if(!socketConnected) return
 
         if (!typing) {
             setTyping(true);
@@ -261,7 +283,7 @@ function ChatBox() {
 
                                         <Box
                                             sx={{
-                                                bgcolor: isMe ? "primary.main" : "grey.800",
+                                                bgcolor: isMe ? "rgba(17, 124, 255, 0.7)" : "rgba(136, 136, 136, 0.2)",
                                                 color: "white",
                                                 px: 2,
                                                 py: 0.8,
@@ -352,8 +374,6 @@ function ChatBox() {
                         </motion.div>
                     )}
                 </AnimatePresence>
-
-
             </Box>
 
 

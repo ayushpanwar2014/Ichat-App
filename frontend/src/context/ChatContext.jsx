@@ -13,6 +13,8 @@ const ChatContextProvider = (props) => {
     const [searchUsers, setSearchUsers] = useState([]);
     const [loading, setLoading] = useState(false); // 🔹 new state
     const [AllUsersChats, setAllUsersChats] = useState([]);
+    const [selectedChat, setSelectedChat] = useState(null);
+    const [notification, setNotification] = useState([]);
 
     //adding users 1 on 1
     const onHandleAccessChat = async (userID) => {
@@ -72,9 +74,6 @@ const ChatContextProvider = (props) => {
         }
     };
 
-    // ChatContextProvider.jsx
-    const [selectedChat, setSelectedChat] = useState(null);
-
     useEffect(() => {
 
         if (user?.name){
@@ -100,9 +99,14 @@ const ChatContextProvider = (props) => {
         AllUsersChats,
         onFetchAllUserChats,
         selectedChat,
-        setSelectedChat
+        setSelectedChat,
+        notification, 
+        setNotification
         
     };
+
+    console.log(notification);
+    
 
     return (
         <ChatContext.Provider value={value}>
