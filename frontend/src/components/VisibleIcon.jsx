@@ -1,5 +1,5 @@
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import { Box, IconButton, Typography } from "@mui/material";
+import { Box, IconButton } from "@mui/material";
 
 
 export default function VisibleIcon({   setProfileUser, setOpenProfile, getProfileUser }) {

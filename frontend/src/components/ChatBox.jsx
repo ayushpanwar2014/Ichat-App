@@ -5,7 +5,7 @@ import { Box, Typography, TextField, IconButton, InputAdornment, Skeleton } from
 import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
 import SendIcon from "@mui/icons-material/Send";
 import GreetingSequence from "./ui/GreetingSequence";
-import VisibleIcon from "./visibleIcon";
+import VisibleIcon from "./VisibleIcon";
 import ChatDialog from "./ChatDialog";
 import { AppContext } from "../context/exportAppContext";
 import ScrollableFeed from "react-scrollable-feed";
