@@ -34,7 +34,7 @@ const AppContextProvider = (props) => {
 
             if (resp.data.success) {
                 setUser(null);
-                notifySuccess("Logout successful!");
+                notifySuccess(resp.data.msg);
                 completeProgress();
             }
 
