@@ -9,9 +9,14 @@ import VisibleIcon from "./visibleIcon";
 import ChatDialog from "./ChatDialog";
 import { AppContext } from "../context/exportAppContext";
 import ScrollableFeed from "react-scrollable-feed";
-import { messageSented } from "./notification/toast";
+import { messageReceived, messageSented } from "./notification/toast";
+import {io} from "socket.io-client";
+
+
+var socket, selectedChatCompare; 
 
 function ChatBox() {
+
     const { selectedChat, backendURL } = useContext(ChatContext);
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState("");
@@ -23,7 +28,13 @@ function ChatBox() {
     const [profileUser, setProfileUser] = useState(null); // For single user
     const isGroup = selectedChat?.isGroupChat;
 
+    const [socketConnected, setSocketConnected] = useState(false);
 
+    useEffect(() => {
+        socket = io(backendURL);
+        socket.emit("setup", user);
+        socket.on("connection", () => setSocketConnected(true));
+    }, [])
 
     const getProfileUser = () => {
         if (!selectedChat) return null;
@@ -31,8 +42,6 @@ function ChatBox() {
         // Single chat: find the other user
         return selectedChat.users.find(u => u._id !== user._id);
     };
-
-
 
     // Fetch messages whenever chat changes
     useEffect(() => {
@@ -46,8 +55,8 @@ function ChatBox() {
                     { withCredentials: true }
                 );
                 if (response.data.success) {
-
                     setMessages(response.data.messages);
+                    socket.emit("join chat", selectedChat._id)
                 }
             } catch (error) {
                 console.error("Error fetching messages:", error);
@@ -55,11 +64,49 @@ function ChatBox() {
                 setLoadingMessages(false); // stop loading
             }
         };
-
         fetchMessages();
+
+        selectedChatCompare = selectedChat;
     }, [selectedChat, backendURL]);
 
 
+
+    useEffect(() => {
+
+        // Listen for incoming messages
+        socket.on("receiveMessage", (messageReceiveded) => {
+            console.log("msg ",messageReceiveded);
+
+            console.log("sele ",selectedChatCompare);
+            
+                setMessages((prev) => [...prev, messageReceiveded]);    
+
+        });
+
+        return () => {
+            socket.off("receiveMessage");
+        };
+  
+    },[selectedChat]); // re-run when chat changes
+
+    useEffect(() => {
+        socket.on("messageNotification", (newMessage) => {
+
+            if (!selectedChatCompare || selectedChatCompare._id !== newMessage.chat._id) {
+
+                if(newMessage.chat.isGroupChat){
+
+                    messageReceived(`${newMessage.content} from  ${newMessage.sender.name} Group ${newMessage.chat.chatName}`);
+                }
+                else{
+
+                    messageReceived(`${newMessage.content} from  ${newMessage.sender.name}`);
+                }
+            }
+        });
+
+        return () => socket.off("messageNotification");
+    }, []);
 
 
     const handleSend = async () => {
@@ -94,6 +141,8 @@ function ChatBox() {
                         msg._id === tempMessage._id ? newMessage : msg
                     )
                 );
+
+                socket.emit('send msg', selectedChat._id,newMessage);
 
             }
         } catch (error) {

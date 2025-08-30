@@ -4,7 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 // Sounds (put them inside /public/sounds/ folder)
 const successSound = new Audio("/sounds/success.mp3");
 const errorSound = new Audio("/sounds/error.mp3");
-const messageReceived = new Audio("/sounds/messageReceived.mp3");
+const messageReceive = new Audio("/sounds/messageReceived.mp3");
 const messageSent = new Audio("/sounds/messageSent.mp3");
 const addedToGroups = new Audio("/sounds/addedToGroup.mp3");
 const removeToGroups = new Audio("/sounds/removeFromGroup.mp3");
@@ -20,9 +20,9 @@ export const notifyError = (msg) => {
     errorSound.play().catch(() => { });
 };
 
-export const messageReceiveded = (msg) => {
+export const messageReceived = (msg) => {
     toast.success(msg);
-    messageReceived.play().catch(() => { });
+    messageReceive.play().catch(() => { });
 };
 
 export const messageSented = () => {
