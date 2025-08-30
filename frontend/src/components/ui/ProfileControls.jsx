@@ -113,7 +113,7 @@ export default function ProfileControls() {
 
                 {/* Logout */}
                 <Box
-                    onClick={fetchLogout}
+                    onClick={() => {fetchLogout()}}
                     sx={{
                         width: "20px",
                         height: "20px",

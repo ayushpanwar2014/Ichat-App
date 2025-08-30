@@ -33,7 +33,6 @@ const AppContextProvider = (props) => {
             const resp = await axios.post(backendURL + '/api/user/logout', {}, { withCredentials: true });
 
             if (resp.data.success) {
-                localStorage.removeItem('userData');
                 setUser(null);
                 notifySuccess("Logout successful!");
                 completeProgress();
