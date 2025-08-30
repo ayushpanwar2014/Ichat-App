@@ -82,13 +82,19 @@ export const login = async (req, res, next) => {
 export const logout = async (req, res, next) => {
     try {
 
-        res.clearCookie('accessToken')
-        res.clearCookie('refreshToken', {
+        res.clearCookie("accessToken", {
             httpOnly: true,
             secure: true,
-            sameSite: 'None',
-            path: '/',
-        }).status(200).json({ success: true, msg: "Logout SuccessFully!" });
+            sameSite: "None",
+            path: "/"
+        });
+        res.clearCookie("refreshToken", {
+            httpOnly: true,
+            secure: true,
+            sameSite: "None",
+            path: "/"
+        });
+
 
     } catch (err) {
 

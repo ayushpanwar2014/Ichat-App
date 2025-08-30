@@ -29,7 +29,7 @@ export const securityMiddleware = (app) => {
                     frameSrc: ["'self'", MAIN_FRONTEND_URL],
                 },
             },
-            crossOriginResourcePolicy: { policy: "same-origin" },
+            crossOriginResourcePolicy: false,
         })
     );
 
@@ -63,6 +63,6 @@ export const securityMiddleware = (app) => {
         message:  "Too many requests from this IP, please try again later.",
     });
 
-    // app.use(limiter);
+    app.use(limiter);
 
 };
