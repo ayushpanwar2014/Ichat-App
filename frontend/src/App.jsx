@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
-import HomePage from "./page/HomePage";
 import Chatpage from "./page/Chatpage";
+import HomePage from "./page/Homepage"
 import { AppContext } from "./context/exportAppContext";
 import "react-toastify/dist/ReactToastify.css";
 

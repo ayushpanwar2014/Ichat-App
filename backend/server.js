@@ -19,7 +19,7 @@ dotenv.config();
 
 // app config
 const app = express();
-const PORT = process.env.PORT || 7060;
+const PORT = process.env.PORT;
 
 // create http server
 const httpServer = createServer(app);
