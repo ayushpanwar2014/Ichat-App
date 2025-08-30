@@ -11,6 +11,15 @@ import { AppContext } from "../context/exportAppContext";
 import ScrollableFeed from "react-scrollable-feed";
 import { messageReceived, messageSented } from "./notification/toast";
 import { io } from "socket.io-client";
+import { keyframes } from "@mui/system";
+import { motion, AnimatePresence } from "framer-motion";
+
+const bounce = keyframes`
+  0% { transform: translateY(0); opacity: 0.3; }
+  50% { transform: translateY(-5px); opacity: 1; }
+  100% { transform: translateY(0); opacity: 0.3; }
+`;
+
 
 
 var socket, selectedChatCompare;
@@ -80,6 +89,7 @@ function ChatBox() {
         // Listen for incoming messages
         socket.on("receiveMessage", (messageReceiveded) => {
             setMessages((prev) => [...prev, messageReceiveded]);
+            socket.emit('stop typing', selectedChat._id);
         });
 
         return () => {
@@ -111,6 +121,7 @@ function ChatBox() {
     //send message
     const handleSend = async () => {
         if (!input.trim() || !selectedChat) return;
+
 
         // --- Step 1: Create a temp message (optimistic UI)
         const tempMessage = {
@@ -286,54 +297,62 @@ function ChatBox() {
 
                 </ScrollableFeed>
 
-                {
-                    istyping &&
-                    <>
-                        <Box
-                            sx={{
-                                display: "flex",
-                                alignItems: "flex-end",
-                                gap: 1,
-                                mb: 1,
-                            }}
+                <AnimatePresence>
+                    {istyping && (
+                        <motion.div
+                            key="typing-bubble"
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 10 }}
+                            transition={{ duration: 0.3 }}
                         >
                             <Box
-                                component="img"
-                                src={typingUser.image}
-                                alt={typingUser.name}
-                                sx={{ width: 35, height: 35, borderRadius: "50%" }}
-                            />
-
-                            <Box
                                 sx={{
-                                    bgcolor: "grey.700",
-                                    borderRadius: 2,
-                                    px: 1.5,
-                                    py: 1.8,
                                     display: "flex",
-                                    alignItems: "center",
-                                    gap: 0.6,
-                                    maxWidth: "65%",
-                                    boxShadow: 1,
+                                    alignItems: "flex-end",
+                                    gap: 1,
+                                    mb: 1,
                                 }}
                             >
-                                {[0, 0.2, 0.4].map((delay, i) => (
-                                    <Box
-                                        key={i}
-                                        sx={{
-                                            width: 6,
-                                            height: 6,
-                                            bgcolor: "white",
-                                            borderRadius: "50%",
-                                            animation: "blink 1.4s infinite both",
-                                            animationDelay: `${delay}s`,
-                                        }}
-                                    />
-                                ))}
+                                <Box
+                                    component="img"
+                                    src={typingUser.image}
+                                    alt={typingUser.name}
+                                    sx={{ width: 35, height: 35, borderRadius: "50%" }}
+                                />
+
+                                <Box
+                                    sx={{
+                                        bgcolor: "grey.700",
+                                        borderRadius: 2,
+                                        px: 1.5,
+                                        py: 1.8,
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: 0.6,
+                                        maxWidth: "65%",
+                                        boxShadow: 1,
+                                    }}
+                                >
+                                    {[0, 0.2, 0.4].map((delay, i) => (
+                                        <Box
+                                            key={i}
+                                            sx={{
+                                                width: 6,
+                                                height: 6,
+                                                bgcolor: "white",
+                                                borderRadius: "50%",
+                                                animation: `${bounce} 1.4s infinite`,
+                                                animationDelay: `${delay}s`,
+                                            }}
+                                        />
+                                    ))}
+                                </Box>
                             </Box>
-                        </Box>
-                    </>
-                }
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
 
             </Box>
 
