@@ -60,9 +60,10 @@ const AppContextProvider = (props) => {
             }
             
         } catch (error) {
-            localStorage.removeItem('userData');
             setUser(null);  
             completeProgress();
+            console.log(error);
+            
             
         }
     }, [backendURL, completeProgress, startProgress]);
