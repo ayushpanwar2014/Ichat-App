@@ -1,4 +1,4 @@
-[![Typing SVG](https://readme-typing-svg.herokuapp.com?font=Fira+Code&weight=500&size=30&pause=1000&color=0E43F7&background=3159FF00&width=900&lines=%F0%9F%A7%91%F0%9F%8F%BC%E2%80%8D%E2%9A%95%EF%B8%8F+iChat+%E2%80%93+Application+Platform)](https://git.io/typing-svg)
+[![Typing SVG](https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1000&width=435&lines=%F0%9F%92%AC+iChat+Applicatioin)](https://git.io/typing-svg)
 
 <img width="1360" height="1128" alt="ichat-App" src="https://github.com/user-attachments/assets/a639016f-a5a6-430f-a3a6-0bdc721e7f40" />
 
