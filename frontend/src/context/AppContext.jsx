@@ -9,6 +9,7 @@ const AppContextProvider = (props) => {
 
     const { startProgress, completeProgress } = useProgress();
     const backendURL = import.meta.env.VITE_BACKEND_URL;
+    const [ backendLoading, setBackendLoading ] = useState(false);
     const [signUp, setSignUp] = useState({
         email: '',
         name: '',
@@ -30,6 +31,7 @@ const AppContextProvider = (props) => {
 
         try {
             startProgress();
+          
             const resp = await axios.post(backendURL + '/api/user/logout', {}, { withCredentials: true });
 
             if (resp.data.success) {
@@ -48,12 +50,14 @@ const AppContextProvider = (props) => {
     //get user
     const fetchUser = useCallback(async () => {
         try {
+            setBackendLoading(true);
             startProgress();
             const response = await axios.get(backendURL + '/api/user/getuser', { withCredentials: true })
 
             if (response.data.success) {
                 setUser(response.data.data);
                 completeProgress();
+                setBackendLoading(false);
             }
             else{
                 setUser(null);  // explicitly null if not logged in
@@ -61,9 +65,8 @@ const AppContextProvider = (props) => {
             
         } catch (error) {
             setUser(null);  
+            setBackendLoading(false);
             completeProgress();
-            console.log(error);
-            
             
         }
     }, [backendURL, completeProgress, startProgress]);
@@ -154,6 +157,8 @@ const AppContextProvider = (props) => {
         Login,
         setLogin,
         onSubmitLogin,
+        backendLoading, 
+        setBackendLoading
     }
 
     return (

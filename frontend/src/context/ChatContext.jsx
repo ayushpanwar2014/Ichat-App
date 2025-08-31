@@ -105,9 +105,6 @@ const ChatContextProvider = (props) => {
         
     };
 
-    console.log(notification);
-    
-
     return (
         <ChatContext.Provider value={value}>
             {props.children}

@@ -50,6 +50,9 @@ app.use(morgan('tiny'));
 app.set('trust proxy', true);
 
 // api routes
+app.get('/ping', (req,res) => {
+    res.status(200).json({success: false, msg: 'yosh'})
+} );
 app.use('/api/user', User_Router);
 app.use('/api/chat', Chat_Router);
 app.use('/api/message', Message_Router);
