@@ -30,7 +30,7 @@ export default function Register() {
         >
             {/* Profile */}
             <label htmlFor="file">
-                <img src={userImg ? URL.createObjectURL(userImg) : "./src/assets/avatar.png"} alt="" />
+                <img src={userImg ? URL.createObjectURL(userImg) : "./avatar.png"} alt="" />
                 <input type="file" id='file' style={{ display: 'none' }} onChange={handleAvatar} />
             </label>
 
