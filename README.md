@@ -4,7 +4,7 @@
 
 
 Full-Stack Developer 
-GitHub Repository: [https://github.com/ayushpanwar2014/Prescripto](https://github.com/ayushpanwar2014/Ichat-App) | Remote  
+GitHub Repository: [Ichat-App](https://github.com/ayushpanwar2014/Ichat-App) | Remote  
 
 ---
 
