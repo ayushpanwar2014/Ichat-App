@@ -1,5 +1,5 @@
 
-import { Container, Typography } from "@mui/material";
+import { Container, Typography, Box } from "@mui/material";
 import MacOSButtons from "../components/ui/Controls";
 import Login from "../components/Login";
 import { useState } from "react";
@@ -30,7 +30,9 @@ function HomePage() {
         gap: 4,    // spacing between elements
       }}
     >
-      <MacOSButtons />
+
+      <MacOSButtons t="12px" r="10px" />
+
       {/* Headline */}
       <Typography variant="h3" color="whitesmoke" align="center" fontWeight={"500"}>
         iChat

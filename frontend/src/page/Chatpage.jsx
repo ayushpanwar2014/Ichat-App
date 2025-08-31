@@ -71,8 +71,16 @@ function Chatpage() {
             }}
         >
             {/* 🔹 Header */}
-            <Box display="flex" justifyContent="space-between" alignItems="center">
-                <MacOSButtons />
+            <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                sx={{
+                    position: "relative",
+                    zIndex: 20,   // 🔹 ensures always on top
+                }}
+            >
+                <MacOSButtons t="12px" r="-7px" />
                 <SearchButton toggleDrawer={toggleDrawer} />
                 {isMobile && (
                     <>

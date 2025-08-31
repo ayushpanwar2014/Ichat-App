@@ -12,8 +12,9 @@ export default function VisibleIcon({   setProfileUser, setOpenProfile, getProfi
                 display: "flex",
                 gap: "20px",
                 position: "absolute",
+                zIndex: 30,
                 top: {xs:"9px"},
-                left:{ xs :"100px", md: "500px"},
+                left:{ xs :"105px", md: "500px"},
             }}
         >
             <Box
@@ -23,7 +24,7 @@ export default function VisibleIcon({   setProfileUser, setOpenProfile, getProfi
                     alignItems: "center",
                     gap: 1,
                     cursor: "pointer",
-                    "&:hover": { transform: "scale(1.1)", cursor: "pointer" },
+                    "&:hover": { transform: "scale(1.2)", cursor: "pointer" },
                     transition: "all 0.2s ease",
                 }}
             >

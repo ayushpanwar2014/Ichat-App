@@ -42,7 +42,8 @@ export default function ProfileControls() {
                     gap: "20px",
                     position: "absolute",
                     top: "12px",
-                    right: "12px",
+                    right: "-5px",
+                    zIndex: 30
                 }}
             >
                 {/* Avatar + Name */}
@@ -88,6 +89,7 @@ export default function ProfileControls() {
                         height: "20px",
                         borderRadius: "50%",
                         display: "flex",
+                        marginRight: -1,
                         alignItems: "center",
                         justifyContent: "center",
                         "&:hover": { transform: "scale(1.2)", cursor: "pointer" },
@@ -130,7 +132,6 @@ export default function ProfileControls() {
                 </Box>
             </Box>
 
-            {/* Notifications Menu */}
             {/* Notifications Menu */}
             <Menu
                 anchorEl={anchorEl}
