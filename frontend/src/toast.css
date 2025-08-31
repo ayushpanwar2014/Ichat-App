@@ -1,14 +1,24 @@
-/* Glassmorphism Toast Style */
+/* Glassmorphism Toast Style - compact size */
 .Toastify__toast {
     background: rgba(29, 6, 6, 0.35) !important;
     backdrop-filter: blur(12px) saturate(180%) !important;
     -webkit-backdrop-filter: blur(12px) saturate(180%) !important;
     color: #fff !important;
-    border-radius: 14px !important;
-    padding: 14px 18px !important;
-    font-size: 14px !important;
+    border-radius: 12px !important;
+    z-index: 10000 !important;
+
+    /* ✅ Smaller height + width */
+    padding: 3px 10px !important;
+    /* reduced padding */
+    font-size: 12px !important;
+    /* smaller text */
+    line-height: 1.2 !important;
+    /* keeps it tighter */
+    max-width: 220px !important;
+    /* narrower toast */
+
     font-weight: 500 !important;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25) !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25) !important;
     border: 1px solid rgba(255, 255, 255, 0.18) !important;
     animation: fadeIn 0.35s ease, fadeOut 0.35s ease 2.7s forwards;
 }
@@ -22,7 +32,7 @@
 @keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(15px);
+        transform: translateY(10px);
     }
 
     to {
@@ -39,6 +49,6 @@
 
     to {
         opacity: 0;
-        transform: translateY(15px);
+        transform: translateY(10px);
     }
 }

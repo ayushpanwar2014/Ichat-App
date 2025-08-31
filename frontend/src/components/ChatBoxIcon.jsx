@@ -11,7 +11,7 @@ function ChatBoxIcon({ toggleChatBox }) {
                 position: "absolute",
                 top: "1px",
                 left: "124px",
-                zIndex: 30,
+                zIndex: 50,
                 color: "whitesmoke",
                 "&:hover": { transform: "scale(1.2)", cursor: "pointer" },
                 transition: "all 0.2s ease",

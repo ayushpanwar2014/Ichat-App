@@ -10,7 +10,7 @@ export default function AllUser({ toggleSidebar }) {
         display: "flex",
         gap: "8px",
         position: "absolute",
-        zIndex: 30,
+        zIndex: 50,
         top: "12px",
         left: "174px",
         width: "16px",
