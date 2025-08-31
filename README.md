@@ -1,0 +1,126 @@
+[![Typing SVG](https://readme-typing-svg.herokuapp.com?font=Fira+Code&weight=500&size=30&pause=1000&color=0E43F7&background=3159FF00&width=900&lines=%F0%9F%A7%91%F0%9F%8F%BC%E2%80%8D%E2%9A%95%EF%B8%8F+iChat+%E2%80%93+Application+Platform)](https://git.io/typing-svg)
+
+<img width="1360" height="1128" alt="ichat-App" src="https://github.com/user-attachments/assets/a639016f-a5a6-430f-a3a6-0bdc721e7f40" />
+
+
+Full-Stack Developer 
+GitHub Repository: [https://github.com/ayushpanwar2014/Prescripto](https://github.com/ayushpanwar2014/Ichat-App) | Remote  
+
+---
+
+<article>
+  <h2>Tech Skills 🛠️</h2>
+
+  <!-- Skillicons for supported skills -->
+  <img src="https://skillicons.dev/icons?i=html,css,js,react,nodejs,expressjs,mongodb,git,github&perline=5" alt="Tech Stack" />
+  
+![Zod](https://img.shields.io/badge/Zod-7A5AF8?style=for-the-badge&logo=zod)
+![WebSocket](https://img.shields.io/badge/DataStructures--Algorithms-3182CE?style=for-the-badge)
+![Material UI](https://img.shields.io/badge/TailwindCSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Cloudinary](https://img.shields.io/badge/Cloudinary-DB0D8B?style=for-the-badge&logo=cloudinary&logoColor=white)
+![REST APIs](https://img.shields.io/badge/REST%20APIs-6C63FF?style=for-the-badge)
+![CI/CD](https://img.shields.io/badge/CI%2FCD-E53E3E?style=for-the-badge)
+![Agile](https://img.shields.io/badge/Agile-F6AD55?style=for-the-badge)
+![Microservices](https://img.shields.io/badge/Microservices-805AD5?style=for-the-badge)
+![DBMS](https://img.shields.io/badge/DBMS-D69E2E?style=for-the-badge)
+![DSA](https://img.shields.io/badge/DataStructures--Algorithms-3182CE?style=for-the-badge)
+![Socket.Io](https://img.shields.io/badge/DataStructures--Algorithms-3182CE?style=for-the-badge)
+</article>
+
+<article>
+
+
+## Overview
+iChat is a MERN stack real-time chat application designed to support thousands of concurrent users. It ensures instant messaging and notifications using Socket.io + WebSockets, with JWT authentication, rotating refresh tokens, and HTTP-only cookies securing user sessions. The app offers group management (create, rename, add/remove, set admins), friend search, and Cloudinary-powered image uploads. A Material UI macOS-inspired interface delivers a smooth UX across desktop and mobile, while Node.js clustering boosts performance by utilizing multiple CPU cores. Deployed on Vercel, iChat is built for scalability, security, and real-time communication.
+
+---
+
+## Features
+- Built iChat, a macOS-inspired real-time chat app with secure authentication, group management, notifications, and Cloudinary uploads, deployed on Vercel.
+- Real-time messaging & notifications powered by Socket.io + WebSockets
+- Friend system with search & add functionality
+- Secure authentication with JWT, rotating refresh tokens, and HTTP-only cookies
+- Image upload & media handling via Cloudinary integration
+- Modern macOS-inspired UI built with Material UI, fully mobile responsive
+- Clustered Node.js backend for multi-core performance scaling  
+- Optimized MongoDB queries for handling large chat histories 
+- RESTful API endpoints for frontend consumption
+
+---
+
+## Environment Variables
+The backend requires the following environment variables in a `.env` file:
+
+
+```bash
+PORT=
+CLOUDINARY_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+MONGODB_URL=
+JWT_SECRET=
+FRONTEND_URL=
+BACKEND_URL=
+
+````
+The Frontend requires the following environment variables in a `.env` file:
+
+```bash
+
+VITE_BACKEND_URL = 
+
+````
+
+---
+
+## Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/ayushpanwar2014/Prescripto.git
+````
+
+2. Install backend dependencies:
+
+```bash
+cd backend
+npm install
+```
+
+3. Run the backend server:
+
+```bash
+npm start
+```
+
+4. Set up frontend in `/frontend` and `/admin` folders (React apps) and run with `npm start`.
+
+---
+
+## Backend Dependencies
+
+* argon2
+* cloudinary
+* cookie-parser
+* cors
+* dotenv
+* express
+* express-rate-limit
+* helmet
+* hpp
+* jsonwebtoken
+* mongoose
+* morgan
+* multer
+* redis
+* zod
+* pm2
+
+---
+
+## License
+
+MIT License
+
+
