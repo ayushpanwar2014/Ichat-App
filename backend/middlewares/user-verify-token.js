@@ -10,10 +10,10 @@ const decodeToken = (token) => {
 export const verifyToken = async (req, res, next) => {
 
     const accessToken = req.cookies.accessToken;
-    const refreshToken = req.cookies.refreshToken;    
-    
+    const refreshToken = req.cookies.refreshToken;
+
     req.user = null;
-    
+
     if (!accessToken && !refreshToken) {
         return res.status(400).send({ success: false, msg: "Not Logged In" });
     }
@@ -90,7 +90,7 @@ export const verifyToken = async (req, res, next) => {
 
                 // Delete old refresh token/session here
                 // await SessionModel.findByIdAndDelete(UserIdAndSessionId._id);
-                
+
 
                 if (UserIdAndSessionId) {
                     req.user = UserIdAndSessionId;
@@ -169,12 +169,14 @@ const refreshTokens = async (refreshToken) => {
 export const verifyRefreshTokenAndLogout = async (req, res, next) => {
 
     const sessionID = req.user._id;
-    
+    const sessionID2 = req.user.session;
+
+
     try {
 
-        if (sessionID) {
+        if (sessionID || sessionID2) {
 
-            const checkSessionId = await SessionModel.findById(sessionID);
+            const checkSessionId = await SessionModel.findById(sessionID || sessionID2);
 
             if (!checkSessionId) return res.status(401).json({ success: false, msg: "Unauthorized Person" });
 

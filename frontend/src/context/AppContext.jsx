@@ -9,7 +9,6 @@ const AppContextProvider = (props) => {
 
     const { startProgress, completeProgress } = useProgress();
     const backendURL = import.meta.env.VITE_BACKEND_URL;
-    const [ backendLoading, setBackendLoading ] = useState(false);
     const [signUp, setSignUp] = useState({
         email: '',
         name: '',
@@ -24,14 +23,30 @@ const AppContextProvider = (props) => {
 
     const [user, setUser] = useState(null);
 
-    
+    const [backendLoading, setBackendLoading] = useState(true);
+
+    const fetchConnection = useCallback(async () => {
+
+        try {
+            setBackendLoading(true);
+            const resp = await axios.get(backendURL + '/connecting', { withCredentials: true });
+
+            if (resp.data.success) {
+                setBackendLoading(false);
+                return true;
+            }
+
+        } catch (error) {
+            console.log(error);
+
+        }
+    }, [backendURL])
 
     //logout clear cookies
     const fetchLogout = useCallback(async () => {
 
         try {
             startProgress();
-          
             const resp = await axios.post(backendURL + '/api/user/logout', {}, { withCredentials: true });
 
             if (resp.data.success) {
@@ -50,33 +65,32 @@ const AppContextProvider = (props) => {
     //get user
     const fetchUser = useCallback(async () => {
         try {
-            setBackendLoading(true);
             startProgress();
             const response = await axios.get(backendURL + '/api/user/getuser', { withCredentials: true })
 
             if (response.data.success) {
                 setUser(response.data.data);
                 completeProgress();
-                setBackendLoading(false);
             }
-            else{
+            else {
                 setUser(null);  // explicitly null if not logged in
             }
-            
+
         } catch (error) {
-            setUser(null);  
-            setBackendLoading(false);
+            setUser(null);
             completeProgress();
-            
+            console.log(error);
+
+
         }
     }, [backendURL, completeProgress, startProgress]);
-    
-    
+
+
     //Register
     const onSubmitRegister = async (e) => {
         e.preventDefault();
         if (signUp.password !== signUp.confirmPassword) {
-            return notifyError( "Password not Matched!");
+            return notifyError("Password not Matched!");
         }
         else {
             try {
@@ -86,14 +100,14 @@ const AppContextProvider = (props) => {
                 UserData.append('email', signUp.email);
                 UserData.append('password', signUp.password);
                 UserData.append('image', userImg)
-                
+
                 const response = await axios.post(backendURL + '/api/user/register', UserData, {
                     withCredentials: true,
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     }
                 });
-                
+
                 if (response.data.success) {
                     await fetchUser();
                     setSignUp({
@@ -140,8 +154,13 @@ const AppContextProvider = (props) => {
     }
 
     useEffect(() => {
-        fetchUser();
-    }, [fetchUser]);
+
+
+        if (fetchConnection()) {
+
+            fetchUser();
+        }
+    }, [fetchUser, fetchConnection]);
 
 
     const value = {
@@ -157,7 +176,7 @@ const AppContextProvider = (props) => {
         Login,
         setLogin,
         onSubmitLogin,
-        backendLoading, 
+        backendLoading,
         setBackendLoading
     }
 

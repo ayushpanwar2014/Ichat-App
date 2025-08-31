@@ -14,6 +14,7 @@ import User_Router from './src/routes/user-routes.js';
 import Chat_Router from './src/routes/chat-routes.js';
 import Message_Router from './src/routes/message-routes.js';
 import { socketHandler } from './socket/websocket.js';
+import { success } from 'zod';
 
 dotenv.config();
 
@@ -50,9 +51,13 @@ app.use(morgan('tiny'));
 app.set('trust proxy', true);
 
 // api routes
-app.get('/ping', (req,res) => {
-    res.status(200).json({success: false, msg: 'yosh'})
-} );
+app.get('/connecting', (req, res) => {
+    try {
+        res.status(200).json({ success: true, msg: "connected" })
+    } catch (error) {
+        res.status(400).json({ success: false, msg: "Not connected" })
+    }
+})
 app.use('/api/user', User_Router);
 app.use('/api/chat', Chat_Router);
 app.use('/api/message', Message_Router);
