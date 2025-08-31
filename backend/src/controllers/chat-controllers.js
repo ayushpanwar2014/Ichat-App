@@ -13,6 +13,14 @@ export const accessChat = async (req, res, next) => {
             return res.status(400).json({ success: false, msg: "User ID is required" });
         }
 
+        // Prevent starting chat with self
+        if (userID.toString() === currentUser.toString()) {
+            return res.status(400).json({
+                success: false,
+                msg: "You cannot start a private chat with yourself",
+            });
+        }
+
         // Try to find existing private chat
         let chat = await ChatModel.findOne({
             isGroupChat: false,
@@ -22,44 +30,35 @@ export const accessChat = async (req, res, next) => {
             .populate("latestMessage");
 
         if (chat) {
-            // Populate latestMessage.sender only if exists
             if (chat.latestMessage) {
                 chat = await UserModel.populate(chat, {
                     path: "latestMessage.sender",
                     select: "name image email",
                 });
             }
-
-            res.status(200).json({ success: true, chat, msg: "Already your Friend" });
+            return res.status(200).json({ success: true, chat, msg: "Already your Friend" });
         }
 
-        // If no chat, create one
-        else if (!chat) {
-            chat = await ChatModel.create({
-                isGroupChat: false,
-                users: [currentUser, userID],
-                chatName: "sender"
-            });
+        // --- No chat found, create one ---
+        const sortedUsers = [currentUser, userID].map(u => u.toString()).sort();
 
-            chat = await chat.populate("users", "-password");
+        chat = await ChatModel.create({
+            isGroupChat: false,
+            users: sortedUsers,
+            chatName: "sender"
+        });
 
+        chat = await chat.populate("users", "-password");
 
-            // Populate latestMessage.sender only if exists
-            if (chat.latestMessage) {
-                chat = await UserModel.populate(chat, {
-                    path: "latestMessage.sender",
-                    select: "name image email",
-                });
-            }
-
-            res.status(200).json({ success: true, chat, msg: "Added new Friend" });
-        }
+        return res.status(200).json({ success: true, chat, msg: "Added new Friend" });
 
     } catch (error) {
-
-        next({ status: 500, message: "unauthorized access" })
+        console.error("Error in accessChat:", error);
+        next({ status: 500, message: error.message });
     }
 };
+
+
 
 export const fetchChats = async (req, res, next) => {
     const currentUser = req.user.userID; // logged-in user

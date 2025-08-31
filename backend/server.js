@@ -47,7 +47,7 @@ app.use(cookieParser());
 app.use(morgan('tiny'));
 
 // get ip address
-app.set('trust proxy', true);
+app.set('trust proxy', false);
 
 // api routes
 app.get('/connecting', (req, res) => {
