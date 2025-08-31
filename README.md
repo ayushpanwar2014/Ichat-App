@@ -3,8 +3,8 @@
 <img width="1360" height="1128" alt="ichat-App" src="https://github.com/user-attachments/assets/a639016f-a5a6-430f-a3a6-0bdc721e7f40" />
 
 
-Full-Stack Developer 
-GitHub Repository: [Ichat-App](https://github.com/ayushpanwar2014/Ichat-App) | Remote  
+## Full-Stack Developer 
+## GitHub Repository: [Ichat-App](https://github.com/ayushpanwar2014/Ichat-App) | Remote  
 
 ---
 
