@@ -9,10 +9,11 @@ import VisibleIcon from "./VisibleIcon";
 import ChatDialog from "./ChatDialog";
 import { AppContext } from "../context/exportAppContext";
 import ScrollableFeed from "react-scrollable-feed";
-import { messageReceived, messageSented } from "./notification/toast";
+import { messageReceived, messageSented, mobileMessageReceived } from "./notification/toast";
 import { io } from "socket.io-client";
-import { keyframes } from "@mui/system";
+import { keyframes, useMediaQuery } from "@mui/system";
 import { motion, AnimatePresence } from "framer-motion";
+
 
 const bounce = keyframes`
   0% { transform: translateY(0); opacity: 0.3; }
@@ -23,6 +24,8 @@ const bounce = keyframes`
 var socket, selectedChatCompare;
 
 function ChatBox() {
+
+    const isMobile = useMediaQuery("(max-width:768px)");
 
     const { selectedChat, backendURL, setNotification } = useContext(ChatContext);
     const [messages, setMessages] = useState([]);
@@ -124,13 +127,13 @@ function ChatBox() {
         socket.on("messageNotification", (newMessage) => {
 
             if (!selectedChatCompare || selectedChatCompare._id !== newMessage.chat._id) {
-
-                    setNotification((prev) => [...prev, newMessage]);
+               isMobile && mobileMessageReceived()
+                setNotification((prev) => [...prev, newMessage]);
                 if (newMessage.chat.isGroupChat) {
-                    messageReceived(`${newMessage.content} from  ${newMessage.sender.name} Group ${newMessage.chat.chatName}`);
+                    !isMobile && messageReceived(`${newMessage.content} from  ${newMessage.sender.name} Group ${newMessage.chat.chatName}`);
                 }
                 else {
-                    messageReceived(`${newMessage.content} from  ${newMessage.sender.name}`);
+                    !isMobile && messageReceived(`${newMessage.content} from  ${newMessage.sender.name}`);
                 }
             }
         });
@@ -187,7 +190,7 @@ function ChatBox() {
     const typingHandler = (e) => {
         setInput(e.target.value)
 
-        if(!socketConnected) return
+        if (!socketConnected) return
 
         if (!typing) {
             setTyping(true);

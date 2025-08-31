@@ -25,6 +25,10 @@ export const messageReceived = (msg) => {
     messageReceive.play().catch(() => { });
 };
 
+export const mobileMessageReceived = () => {
+    messageReceive.play().catch(() => { });
+};
+
 export const messageSented = () => {
     messageSent.play().catch(() => { });
 };
