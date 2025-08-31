@@ -14,7 +14,6 @@ import User_Router from './src/routes/user-routes.js';
 import Chat_Router from './src/routes/chat-routes.js';
 import Message_Router from './src/routes/message-routes.js';
 import { socketHandler } from './socket/websocket.js';
-import { success } from 'zod';
 
 dotenv.config();
 
@@ -27,7 +26,7 @@ const httpServer = createServer(app);
 
 // socket.io server
 const io = new Server(httpServer, {
-    pingTimeout: 60000, //after 60s user is not active it will off
+    pingTimeout: 30000, //after 30s user is not active it will off
     cors: {
         origin: process.env.FRONTEND_URL || "http://localhost:5173",
         credentials: true,
