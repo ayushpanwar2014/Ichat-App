@@ -14,17 +14,19 @@ GitHub Repository: [Ichat-App](https://github.com/ayushpanwar2014/Ichat-App) | R
   <!-- Skillicons for supported skills -->
   <img src="https://skillicons.dev/icons?i=html,css,js,react,nodejs,expressjs,mongodb,git,github&perline=5" alt="Tech Stack" />
   
-![Zod](https://img.shields.io/badge/Zod-7A5AF8?style=for-the-badge&logo=zod)
-![WebSocket](https://img.shields.io/badge/DataStructures--Algorithms-3182CE?style=for-the-badge)
-![Material UI](https://img.shields.io/badge/TailwindCSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
-![Cloudinary](https://img.shields.io/badge/Cloudinary-DB0D8B?style=for-the-badge&logo=cloudinary&logoColor=white)
+![MERN](https://img.shields.io/badge/MERN-4DB33D?style=for-the-badge&logo=mongodb&logoColor=white)
+![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)
+![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
+![Socket.io](https://img.shields.io/badge/Socket.io-010101?style=for-the-badge&logo=socketdotio&logoColor=white)
+![WebSockets](https://img.shields.io/badge/WebSockets-333333?style=for-the-badge&logo=websocket&logoColor=white)
+![Material UI](https://img.shields.io/badge/Material--UI-0081CB?style=for-the-badge&logo=mui&logoColor=white)
+![Cloudinary](https://img.shields.io/badge/Cloudinary-3448C5?style=for-the-badge&logo=cloudinary&logoColor=white)
 ![REST APIs](https://img.shields.io/badge/REST%20APIs-6C63FF?style=for-the-badge)
-![CI/CD](https://img.shields.io/badge/CI%2FCD-E53E3E?style=for-the-badge)
-![Agile](https://img.shields.io/badge/Agile-F6AD55?style=for-the-badge)
-![Microservices](https://img.shields.io/badge/Microservices-805AD5?style=for-the-badge)
-![DBMS](https://img.shields.io/badge/DBMS-D69E2E?style=for-the-badge)
-![DSA](https://img.shields.io/badge/DataStructures--Algorithms-3182CE?style=for-the-badge)
-![Socket.Io](https://img.shields.io/badge/DataStructures--Algorithms-3182CE?style=for-the-badge)
+![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
+
 </article>
 
 <article>
