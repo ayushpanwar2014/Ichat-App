@@ -160,7 +160,7 @@ export default function ProfileControls() {
                         />
                     </MenuItem>
                 ) : (
-                    notification.map((n, i) => (
+                    [...notification].reverse().map((n, i) => (
                         <MenuItem
                             key={i}
                             onClick={handleCloseNotification}
@@ -171,7 +171,7 @@ export default function ProfileControls() {
                             }}
                         >
                             <ListItemText
-                                primary={`${n.sender?.name || "Someone"} sent a message`}
+                                primary={`${n.sender?.name || "Someone"} sent a message ${n.chat.isGroupChat? `from ${n.chat.chatName} group` : ""}`}
                                 secondary={n.content || ""}
                                 primaryTypographyProps={{
                                     fontSize: "0.75rem", // smaller font

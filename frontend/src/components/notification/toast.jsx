@@ -9,6 +9,7 @@ const messageSent = new Audio("/sounds/messageSent.mp3");
 const addedToGroups = new Audio("/sounds/addedToGroup.mp3");
 const removeToGroups = new Audio("/sounds/removeFromGroup.mp3");
 const renameGroup = new Audio("/sounds/renameGroup.mp3");
+const sendMsg = new Audio("/sounds/sendMsg.mp3");
 
 export const notifySuccess = (msg) => {
     toast.success(msg);
@@ -18,6 +19,10 @@ export const notifySuccess = (msg) => {
 export const notifyError = (msg) => {
     toast.error(msg);
     errorSound.play().catch(() => { });
+};
+
+export const sendMessage = () => {
+    sendMsg.play().catch(() => { });
 };
 
 export const messageReceived = (msg) => {

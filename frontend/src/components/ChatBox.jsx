@@ -9,7 +9,7 @@ import VisibleIcon from "./VisibleIcon";
 import ChatDialog from "./ChatDialog";
 import { AppContext } from "../context/exportAppContext";
 import ScrollableFeed from "react-scrollable-feed";
-import { messageReceived, messageSented, mobileMessageReceived } from "./notification/toast";
+import { messageReceived, messageSented, mobileMessageReceived, sendMessage } from "./notification/toast";
 import { io } from "socket.io-client";
 import { keyframes, useMediaQuery } from "@mui/system";
 import { motion, AnimatePresence } from "framer-motion";
@@ -113,6 +113,7 @@ function ChatBox() {
         // Listen for incoming messages
         socket.on("receiveMessage", (messageReceiveded) => {
             setMessages((prev) => [...prev, messageReceiveded]);
+            sendMessage();
             socket.emit('stop typing', selectedChat._id);
         });
 
@@ -213,6 +214,14 @@ function ChatBox() {
 
     }
 
+    useEffect(() => {
+        const chatContainer = document.querySelector(".scrollable-chat");
+        if (chatContainer) {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+    }, [messages]);
+
+
     if (!selectedChat) {
 
         return (
@@ -223,7 +232,14 @@ function ChatBox() {
     return (
         <Box sx={{ flex: 1, display: "flex", flexDirection: "column", backgroundColor: "rgba(47, 47, 47, 0.05)", border: "0.5px solid rgba(255, 255, 255, 0.12)", borderRadius: "12px", mt: 5, overflow: "hidden", borderLeft: "none", borderRight: "none" }}>
             {/* Chat messages */}
-            <Box sx={{ flex: 1, overflowY: "auto", p: 2, display: "flex", flexDirection: "column", gap: 1.5, height: "60vh" }}>
+            <Box sx={{
+                flex: 1,
+                overflowY: "auto",
+                p: 2,
+                display: "flex",
+                flexDirection: "column",
+                gap: 1.5
+            }}>
                 <ScrollableFeed forceScroll={true} className="scrollable-chat">
                     {loadingMessages ? (
                         // Show skeletons (mix left + right)
