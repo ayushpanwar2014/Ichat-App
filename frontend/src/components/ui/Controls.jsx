@@ -31,7 +31,6 @@ function MacOSButtons() {
       sx={{
         display: "flex",
         gap: "8px",
-        zIndex: 30
       }}
     >
       {/* Red - Back */}

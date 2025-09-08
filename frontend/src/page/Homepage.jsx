@@ -27,11 +27,11 @@ function HomePage() {
         WebkitBackdropFilter: "blur(10px) saturate(180%)",
         marginTop: "10vh",
         padding: 4, // padding inside the container
-        gap: 4,    // spacing between elements
+        gap: 3,    // spacing between elements
       }}
     >
 
-      <MacOSButtons t="12px" r="10px" />
+      <MacOSButtons />
 
       {/* Headline */}
       <Typography variant="h3" color="whitesmoke" align="center" fontWeight={"500"}>
