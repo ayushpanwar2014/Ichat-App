@@ -64,7 +64,7 @@ export default function SideBar({ OnClickOfUserChat }) {
         <Box
             sx={{
                 marginLeft: { xs: 0, sm: "-30px" },
-                marginTop: { xs: 5, sm: 5 },
+                marginTop: { xs: 5, sm: 2.5 },
                 width: { xs: "100%", sm: "35%", md: "25%" },
                 height: "100%",
                 backgroundColor: "rgba(47, 47, 47, 0.05)",

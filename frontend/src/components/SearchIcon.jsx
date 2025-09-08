@@ -8,10 +8,7 @@ export default function SearchButton({toggleDrawer}) {
           sx={{
               display: "flex",
               gap: "8px",
-              position: "absolute",
               zIndex: 30,
-              top: "13px",
-              left: "70px",
               width: "16px",
               height: "16px",
               borderRadius: "50%",

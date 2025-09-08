@@ -25,7 +25,7 @@ export default function SideDrawer({ drawerOpen }) {
                     position: "absolute",
                     top: 0,
                     left: 0,
-                    marginTop: 5,
+                    marginTop: {xs: 6, md: 5},
                     width: { xs: "100%", sm: "30%", md: "24%", lg: "23.3%" }, // ✅ responsive
                     height: "100%",
                     backgroundColor: "rgba(29, 6, 6, 0.35)", // ✅ must be semi-transparent

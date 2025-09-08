@@ -66,6 +66,7 @@ function Chatpage() {
                 backdropFilter: "blur(10px) saturate(180%)",
                 WebkitBackdropFilter: "blur(10px) saturate(180%)",
                 marginTop: "10vh",
+                gap: 0,
                 position: "relative",
                 overflow: "hidden",
             }}
@@ -76,23 +77,29 @@ function Chatpage() {
                 justifyContent="space-between"
                 alignItems="center"
                 sx={{
-                    position: "relative",
-                    zIndex: 20,   // 🔹 ensures always on top
+                    marginTop:1
                 }}
             >
-                <MacOSButtons t="12px" r="-7px" />
+                <Box display="flex" justifyContent="space-between" alignItems="center" sx={{
+                    gap: 1.5,
+                }}>
+                <MacOSButtons />
                 <SearchButton toggleDrawer={toggleDrawer} />
+                </Box>
+
                 {isMobile && (
-                    <>
+                    <Box display="flex" justifyContent="space-between" alignItems="center" sx={{
+                        gap: 1
+                    }}>
                         <AllUser toggleSidebar={toggleSidebar} />
                         <ChatBoxIcon toggleChatBox={toggleChatBox} /> {/* ✅ new chatbox icon */}
-                    </>
+                    </Box>
                 )}
                 <ProfileControls />
             </Box>
 
             {/* 🔹 Main Section */}
-            <Box sx={{ display: "flex", height: "100%", justifyContent: "space-between" }}>
+            <Box sx={{ display: "flex", height: {xs: "75vh" , md: "77vh"}, justifyContent: "space-between",  mt:{xs: -2.4, md:-2}}}>
                 {/* ✅ Laptop / PC Mode */}
                 {!isMobile && (
                     <>

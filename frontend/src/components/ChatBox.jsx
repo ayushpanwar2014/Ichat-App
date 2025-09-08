@@ -128,13 +128,13 @@ function ChatBox() {
         socket.on("messageNotification", (newMessage) => {
 
             if (!selectedChatCompare || selectedChatCompare._id !== newMessage.chat._id) {
-               isMobile && mobileMessageReceived()
+
                 setNotification((prev) => [...prev, newMessage]);
                 if (newMessage.chat.isGroupChat) {
-                    !isMobile && messageReceived(`${newMessage.content} from  ${newMessage.sender.name} Group ${newMessage.chat.chatName}`);
+                    messageReceived(`${newMessage.content} from  ${newMessage.sender.name} Group ${newMessage.chat.chatName}`);
                 }
                 else {
-                    !isMobile && messageReceived(`${newMessage.content} from  ${newMessage.sender.name}`);
+                    messageReceived(`${newMessage.content} from  ${newMessage.sender.name}`);
                 }
             }
         });
@@ -228,9 +228,9 @@ function ChatBox() {
             <GreetingSequence />
         );
     }
-
+    
     return (
-        <Box sx={{ flex: 1, display: "flex", flexDirection: "column", backgroundColor: "rgba(47, 47, 47, 0.05)", border: "0.5px solid rgba(255, 255, 255, 0.12)", borderRadius: "12px", mt: 5, overflow: "hidden", borderLeft: "none", borderRight: "none" }}>
+        <Box sx={{ flex: 1, display: "flex", flexDirection: "column", backgroundColor: "rgba(47, 47, 47, 0.05)", border: "0.5px solid rgba(255, 255, 255, 0.12)", borderRadius: "12px", marginTop:{ xs:4.1,md:"20px"}, overflow: "hidden", borderLeft: "none", borderRight: "none" }}>
             {/* Chat messages */}
             <Box sx={{
                 flex: 1,

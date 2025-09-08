@@ -56,11 +56,10 @@ export default function GreetingSequence() {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                height: "100vh",
+                height: "77vh",
                 marginLeft: isMobile ? 40: -50,
                 marginRight: isMobile ? "": 50,
                 width: "70%",
-                marginTop:-100,
                 background: "rgba(0,0,0,0)",
             }}
         >

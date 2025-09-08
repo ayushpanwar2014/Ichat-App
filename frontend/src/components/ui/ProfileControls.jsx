@@ -39,27 +39,24 @@ export default function ProfileControls() {
             <Box
                 sx={{
                     display: "flex",
-                    gap: "20px",
-                    position: "absolute",
-                    top: "12px",
-                    right: "-5px",
-                    zIndex: 30
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    gap: 0.5,
                 }}
             >
                 {/* Avatar + Name */}
                 <Box
                     onClick={() => setOpenProfile(true)}
                     sx={{
-                        marginTop: "-8px",
                         display: "flex",
                         alignItems: "center",
+                        justifyContent: "space-between",
                         gap: 1,
                         cursor: "pointer",
                     }}
                 >
                     <Avatar
                         sx={{
-                            marginTop: 0.3,
                             width: 28,
                             height: 28,
                             bgcolor: "#0073ffff",
@@ -74,7 +71,7 @@ export default function ProfileControls() {
                             color: "white",
                             fontSize: { xs: "0.75rem", sm: "0.85rem", md: "0.9rem" },
                             fontWeight: 500,
-                            marginRight: -1,
+
                         }}
                     >
                         {user?.name}
@@ -89,7 +86,6 @@ export default function ProfileControls() {
                         height: "20px",
                         borderRadius: "50%",
                         display: "flex",
-                        marginRight: -1,
                         alignItems: "center",
                         justifyContent: "center",
                         "&:hover": { transform: "scale(1.2)", cursor: "pointer" },

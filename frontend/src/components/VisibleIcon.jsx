@@ -13,8 +13,8 @@ export default function VisibleIcon({   setProfileUser, setOpenProfile, getProfi
                 gap: "20px",
                 position: "absolute",
                 zIndex: 30,
-                top: {xs:"9px"},
-                left:{ xs :"105px", md: "500px"},
+                top: {xs:"50px", md: "28px"},
+                left:{ xs :"160px", md: "650px"},
             }}
         >
             <Box

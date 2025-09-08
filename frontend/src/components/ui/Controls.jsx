@@ -4,7 +4,7 @@ import ReplayIcon from '@mui/icons-material/Replay';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { useProgress } from "../../context/ProgressContext";
 
-function MacOSButtons({t,r}) {
+function MacOSButtons() {
 
   const { startProgress, completeProgress } = useProgress();
 
@@ -31,9 +31,6 @@ function MacOSButtons({t,r}) {
       sx={{
         display: "flex",
         gap: "8px",
-        position: "absolute",
-        top: t,
-        left: r,
         zIndex: 30
       }}
     >
