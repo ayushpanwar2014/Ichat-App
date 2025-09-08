@@ -34,7 +34,7 @@ function HomePage() {
       <MacOSButtons />
 
       {/* Headline */}
-      <Typography variant="h3" color="whitesmoke" align="center" fontWeight={"500"}>
+      <Typography variant="h3" color="whitesmoke" align="center" fontWeight={"500"} sx={{marginTop: -1}}>
         iChat
       </Typography>
 

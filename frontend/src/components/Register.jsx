@@ -159,7 +159,7 @@ export default function Register() {
             <Button onClick={onSubmitRegister}
                 fullWidth
                 sx={{
-                    mb: -3,
+
                     py: 1.5,
                     background: "linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%)",
                     color: "white",
