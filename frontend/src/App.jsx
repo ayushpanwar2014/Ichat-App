@@ -4,7 +4,7 @@ import Chatpage from "./page/Chatpage";
 import HomePage from "./page/Homepage";
 import { AppContext } from "./context/exportAppContext";
 import "react-toastify/dist/ReactToastify.css";
-import { Box, CircularProgress, Container, Typography } from "@mui/material";
+import {  CircularProgress, Container, Typography } from "@mui/material";
 
 function App() {
   const { user, backendLoading } = useContext(AppContext);

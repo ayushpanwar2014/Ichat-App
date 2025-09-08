@@ -26,7 +26,7 @@ function HomePage() {
         backdropFilter: "blur(10px) saturate(180%)",
         WebkitBackdropFilter: "blur(10px) saturate(180%)",
         marginTop: "10vh",
-        padding: 4, // padding inside the container
+        padding: 3, // padding inside the container
         gap: 3,    // spacing between elements
       }}
     >
