@@ -41,7 +41,7 @@ export default function ProfileControls() {
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
-                    gap: 0.5,
+                    gap: 1,
                 }}
             >
                 {/* Avatar + Name */}
@@ -113,8 +113,8 @@ export default function ProfileControls() {
                 <Box
                     onClick={() => {fetchLogout()}}
                     sx={{
-                        width: "20px",
-                        height: "20px",
+                        width: "28px",
+                        height: "28px",
                         borderRadius: "50%",
                         backgroundColor: "#0073ffff",
                         display: "flex",
@@ -122,6 +122,8 @@ export default function ProfileControls() {
                         justifyContent: "center",
                         "&:hover": { transform: "scale(1.2)", cursor: "pointer" },
                         transition: "all 0.2s ease",
+                        zIndex: 10,              // ✅ ensure it's above
+                        position: "relative",    // ✅ keeps zIndex effective
                     }}
                 >
                     <LogoutIcon sx={{ fontSize: 13, color: "black" }} />
