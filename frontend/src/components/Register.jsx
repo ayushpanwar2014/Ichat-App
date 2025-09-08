@@ -25,7 +25,7 @@ export default function Register() {
                 maxWidth: "400px",
                 display: "flex",
                 flexDirection: "column",
-                gap: { xs: 2, sm: 1, md: 1, lg: 1.5 },
+                gap: { xs: 2, sm: 1, md: 1, lg: 1 },
             }}
         >
             {/* Profile */}
@@ -159,6 +159,7 @@ export default function Register() {
             <Button onClick={onSubmitRegister}
                 fullWidth
                 sx={{
+                    mb: -2,
                     py: 1.5,
                     background: "linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%)",
                     color: "white",
