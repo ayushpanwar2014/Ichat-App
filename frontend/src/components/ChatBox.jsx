@@ -114,6 +114,7 @@ function ChatBox() {
         socket.on("receiveMessage", (messageReceiveded) => {
             setMessages((prev) => [...prev, messageReceiveded]);
             sendMessage();
+            isMobile && sendMessage();
             socket.emit('stop typing', selectedChat._id);
         });
 
@@ -128,6 +129,8 @@ function ChatBox() {
         socket.on("messageNotification", (newMessage) => {
 
             if (!selectedChatCompare || selectedChatCompare._id !== newMessage.chat._id) {
+
+                isMobile && mobileMessageReceived();
 
                 setNotification((prev) => [...prev, newMessage]);
                 if (newMessage.chat.isGroupChat) {
