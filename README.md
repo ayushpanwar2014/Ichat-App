@@ -14,7 +14,6 @@
   <!-- Skillicons for supported skills -->
   <img src="https://skillicons.dev/icons?i=html,css,js,react,nodejs,expressjs,mongodb,git,github&perline=5" alt="Tech Stack" />
   
-![MERN](https://img.shields.io/badge/MERN-4DB33D?style=for-the-badge&logo=mongodb&logoColor=white)
 ![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)
 ![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)
 ![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)
